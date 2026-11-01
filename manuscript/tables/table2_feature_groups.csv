@@ -1,0 +1,18 @@
+feature_group,feature_name,domain,source_var_2020,source_var_2021,source_var_2022,description,comparability_status
+Group_A_Demographics,AgeCategory,Demographic,_AGEG5YR,_AGEG5YR,_AGEG5YR,14-level age brackets (18-24 to 80+),EXACTLY_COMPARABLE
+Group_A_Demographics,Sex,Demographic,_SEX / SEXVAR,_SEX,_SEX,Male / Female biological sex indicator,EXACTLY_COMPARABLE
+Group_A_Demographics,Race,Demographic,_IMPRACE,_IMPRACE,_IMPRACE,Self-reported race/ethnicity,EXACTLY_COMPARABLE
+Group_B_BehavioralLifestyle,BMI,Behavioral/Anthropometric,_BMI5,_BMI5,_BMI5,Body Mass Index (kg/m^2),EXACTLY_COMPARABLE
+Group_B_BehavioralLifestyle,Smoking,Behavioral Lifestyle,SMOKE100,SMOKE100,SMOKE100,Smoked at least 100 cigarettes in lifetime,EXACTLY_COMPARABLE
+Group_B_BehavioralLifestyle,AlcoholDrinking,Behavioral Lifestyle,_RFDRHV7,_RFDRHV7,_RFDRHV8,"Heavy drinkers (adult men >14 drinks/wk, women >7 drinks/wk)",EXACTLY_COMPARABLE
+Group_B_BehavioralLifestyle,PhysicalActivity,Behavioral Lifestyle,_TOTINDA,_TOTINDA,_TOTINDA,Physical activity or exercise during the past 30 days,EXACTLY_COMPARABLE
+Group_B_BehavioralLifestyle,SleepTime,Behavioral Lifestyle,SLEPTIM1,NOT_IN_CORE,SLEPTIM1,Average hours of sleep per 24-hour period,MODIFIED_ROTATION_2021
+Group_C_GeneralHealth,GenHealth,Self-Reported Health Status,GENHLTH,GENHLTH,GENHLTH,"Subjective health assessment (Excellent, Very good, Good, Fair, Poor)",EXACTLY_COMPARABLE
+Group_D_ClinicalConditionsFunctional,Stroke,Clinical Morbidity,CVDSTRK3,CVDSTRK3,CVDSTRK3,Ever told had a stroke,EXACTLY_COMPARABLE
+Group_D_ClinicalConditionsFunctional,PhysicalHealth,Functional Morbidity,PHYSHLTH,PHYSHLTH,PHYSHLTH,Days of poor physical health in past 30 days,EXACTLY_COMPARABLE
+Group_D_ClinicalConditionsFunctional,MentalHealth,Functional Morbidity,MENTHLTH,MENTHLTH,MENTHLTH,Days of poor mental health in past 30 days,EXACTLY_COMPARABLE
+Group_D_ClinicalConditionsFunctional,DiffWalking,Functional Limitation,DIFFWALK,DIFFWALK,DIFFWALK,Serious difficulty walking or climbing stairs,EXACTLY_COMPARABLE
+Group_D_ClinicalConditionsFunctional,Diabetic,Clinical Morbidity,DIABETE4,DIABETE4,DIABETE4,"Ever told had diabetes (No, Yes, Borderline, Pregnancy)",EXACTLY_COMPARABLE
+Group_D_ClinicalConditionsFunctional,Asthma,Clinical Morbidity,ASTHMA3,ASTHMA3,ASTHMA3,Ever told had asthma,EXACTLY_COMPARABLE
+Group_D_ClinicalConditionsFunctional,KidneyDisease,Clinical Morbidity,CHCKDNY2,CHCKDNY2,CHCKDNY2,Ever told had kidney disease (excluding stones/infections),EXACTLY_COMPARABLE
+Group_D_ClinicalConditionsFunctional,SkinCancer,Clinical Morbidity,CHCSCNCR,CHCSCNCR,CHCSCNC1,Ever told had skin cancer,EXACTLY_COMPARABLE

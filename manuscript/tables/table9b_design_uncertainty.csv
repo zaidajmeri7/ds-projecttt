@@ -1,0 +1,9 @@
+survey_wave,metric_name,survey_weighted_point_estimate,design_based_standard_error,design_effect_deff,ci_95_lower,ci_95_upper,variance_estimation_method,strata_variable,psu_variable,weight_variable
+2021,Prevalence,0.0618413293220486,0.0008288598779038,4.127571797330967,0.0602167639613571,0.0634658946827401,Taylor Series Linearization (Stratified Clustered Ratio Estimator),_STSTR,_PSU,_LLCPWT
+2021,Sensitivity_at_tau,0.7519088256232556,0.0064130665535231,76.84975921868568,0.7393392151783502,0.7644784360681609,Taylor Series Linearization (Stratified Clustered Ratio Estimator),_STSTR,_PSU,_LLCPWT
+2021,Specificity_at_tau,0.8017454270779841,0.0014126407290303,4.376140497691008,0.7989766512490846,0.8045142029068837,Taylor Series Linearization (Stratified Clustered Ratio Estimator),_STSTR,_PSU,_LLCPWT
+2021,Precision_at_tau,0.2000016504852803,0.0027379293028167,16.330869321392964,0.1946353090517594,0.2053679919188011,Taylor Series Linearization (Stratified Clustered Ratio Estimator),_STSTR,_PSU,_LLCPWT
+2022,Prevalence,0.067438176830024,0.0008062023570233,3.5062465557975115,0.0658580202102582,0.0690183334497897,Taylor Series Linearization (Stratified Clustered Ratio Estimator),_STSTR,_PSU,_LLCPWT
+2022,Sensitivity_at_tau,0.7871760735416009,0.0049667392850751,49.95605887852321,0.7774412645428537,0.7969108825403481,Taylor Series Linearization (Stratified Clustered Ratio Estimator),_STSTR,_PSU,_LLCPWT
+2022,Specificity_at_tau,0.7879025813153305,0.0014197692725308,4.092280717348646,0.78511983354117,0.7906853290894911,Taylor Series Linearization (Stratified Clustered Ratio Estimator),_STSTR,_PSU,_LLCPWT
+2022,Precision_at_tau,0.211598326197214,0.0026370476356633,14.142101910657669,0.2064297128313139,0.2167669395631141,Taylor Series Linearization (Stratified Clustered Ratio Estimator),_STSTR,_PSU,_LLCPWT

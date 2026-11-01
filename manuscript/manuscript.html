@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Beyond Random Splits: Leakage, Imbalance Handling, Calibration, and Temporal Generalization in BRFSS-Based Heart Disease Classification</title>
+<style>
+
+    @page {
+      size: letter;
+      margin: 20mm 18mm 20mm 18mm;
+      @bottom-right {
+        content: counter(page);
+        font-size: 8.5pt;
+        font-family: 'Times New Roman', Times, serif;
+      }
+    }
+    body {
+      font-family: 'Times New Roman', Times, 'Nimbus Roman No9 L', serif;
+      font-size: 9.5pt;
+      line-height: 1.45;
+      color: #111;
+      margin: 0;
+      padding: 0;
+    }
+    .title-block {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .title {
+      font-size: 17pt;
+      font-weight: bold;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      color: #0b1a30;
+    }
+    .authors {
+      font-size: 10pt;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .affiliations {
+      font-size: 8.5pt;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .meta-bar {
+      font-size: 8pt;
+      color: #666;
+      border-top: 0.5px solid #ccc;
+      border-bottom: 0.5px solid #ccc;
+      padding: 4px 0;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .abstract-box {
+      background: #fafbfc;
+      border: 1px solid #d0d7de;
+      border-left: 4px solid #1a365d;
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      font-size: 9pt;
+      line-height: 1.4;
+      border-radius: 2px;
+    }
+    .abstract-heading {
+      font-size: 9.5pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #1a365d;
+      margin-bottom: 8px;
+    }
+    .abstract-box p {
+      margin: 4px 0;
+      text-indent: 0 !important;
+      text-align: justify;
+    }
+    .keywords {
+      margin-top: 8px;
+      font-size: 8.5pt;
+      border-top: 0.5px dashed #ccc;
+      padding-top: 6px;
+    }
+    h2 {
+      font-size: 11.5pt;
+      font-weight: bold;
+      border-bottom: 1px solid #222;
+      padding-bottom: 2px;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #1a365d;
+    }
+    h3 {
+      font-size: 10.5pt;
+      font-weight: bold;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      color: #222;
+    }
+    p {
+      text-align: justify;
+      text-justify: inter-word;
+      margin: 0 0 7px 0;
+      text-indent: 1.5em;
+    }
+    p.no-indent, h2 + p, h3 + p, .abstract-box p, .figure-caption, .table-caption {
+      text-indent: 0 !important;
+    }
+    table.academic-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 6px 0;
+      font-size: 7.8pt;
+      line-height: 1.25;
+      page-break-inside: avoid;
+    }
+    table.academic-table th {
+      border-top: 1.5px solid #111;
+      border-bottom: 1px solid #111;
+      padding: 4px 5px;
+      font-weight: bold;
+      text-align: left;
+      background: #f7f9fa;
+    }
+    table.academic-table td {
+      border-bottom: 0.5px solid #e1e4e8;
+      padding: 3.5px 5px;
+      vertical-align: top;
+    }
+    table.academic-table tr:last-child td {
+      border-bottom: 1.5px solid #111;
+    }
+    .table-caption {
+      font-size: 8.5pt;
+      font-weight: bold;
+      color: #222;
+      margin-top: 14px;
+      margin-bottom: 4px;
+      text-align: left;
+    }
+    .table-notes {
+      font-size: 7.5pt;
+      color: #555;
+      font-style: italic;
+      margin-top: 2px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    .figure-container {
+      text-align: center;
+      margin: 16px 0;
+      page-break-inside: avoid;
+    }
+    .figure-container img {
+      max-width: 96%;
+      height: auto;
+      border: 0.5px solid #e1e4e8;
+      border-radius: 2px;
+    }
+    .figure-caption {
+      font-size: 8.5pt;
+      margin-top: 6px;
+      text-align: justify;
+      line-height: 1.35;
+      color: #222;
+    }
+    ul, ol {
+      margin: 4px 0 8px 20px;
+      padding: 0;
+      font-size: 9pt;
+    }
+    li {
+      margin-bottom: 4px;
+      text-align: justify;
+    }
+    .reference-item {
+      font-size: 8pt;
+      line-height: 1.35;
+      padding-left: 2em;
+      text-indent: -2em;
+      margin-bottom: 5px;
+      text-align: left;
+    }
+    .declarations-box {
+      font-size: 8pt;
+      background: #f8f9fa;
+      border: 0.5px solid #d0d7de;
+      padding: 10px 14px;
+      margin-top: 20px;
+      margin-bottom: 16px;
+      page-break-inside: avoid;
+      line-height: 1.35;
+    }
+    .declarations-box p {
+      text-indent: 0;
+      margin-bottom: 4px;
+    }
+    
+</style>
+</head>
+<body>
+<div class="title-block">
+  <div class="title">Beyond Random Splits: Leakage, Imbalance Handling, Calibration, and Temporal Generalization in BRFSS-Based Heart Disease Classification</div>
+  <div class="authors">Senior Medical Machine Learning Scientist, Epidemiological Methodologist, and Independent Scientific Audit Consortium</div>
+  <div class="affiliations">Department of Biomedical Informatics, Public Health Surveillance Laboratory</div>
+<p><strong>Reporting Standards:</strong> STROBE (Observational Epidemiology) & TRIPOD+AI (Artificial Intelligence Prediction Models)</p>
+  <div class="meta-bar">Target Venues: The Lancet Digital Health / npj Digital Medicine / JAMIA &bull; Standards: STROBE &amp; TRIPOD+AI &bull; October 2026</div>
+</div>
+<p>---</p>
+<div class="abstract-box">
+  <div class="abstract-heading">Structured Abstract</div>
+<p><strong>Background:</strong> Machine learning models trained on large population health surveillance surveys are increasingly proposed for automated cardiovascular risk stratification. However, published benchmarks frequently rely on naive random train-test splits, apply synthetic oversampling (SMOTE) across unpartitioned data, evaluate exclusively at arbitrary default decision thresholds ($\tau = 0.50$), and omit independent out-of-time temporal validation.</p>
+<p><strong>Objective:</strong> To evaluate how data leakage from pre-split resampling, class-imbalance strategies, probability calibration, and domain-informed threshold selection affect the true discriminative performance, reliability, and multi-year temporal generalization of machine learning models classifying self-reported cardiovascular disease status in population health surveys.</p>
+<p><strong>Methods:</strong> We conducted an end-to-end methodological audit and multi-wave temporal validation using the CDC Behavioral Risk Factor Surveillance System (BRFSS), encompassing $>1.2$ million total survey responses across three consecutive annual cycles (2020, 2021, and 2022). The primary target was self-reported lifetime physician-diagnosed myocardial infarction or coronary heart disease (`_MICHD`). Using an 80/20 partitioned development cohort in BRFSS 2020 ($N = 319,795$; positive prevalence $8.56\%$), we compared clean training-only resampling against a deliberately invalid pre-split oversampling control. A frozen, unresampled gradient boosted decision tree (XGBoost; SHA-256 hash locked) was calibrated, optimized for an $80\%$ screening sensitivity operating point ($\tau^* = 0.0816$), and evaluated without retraining or recalibration across independent out-of-time surveillance waves in 2021 ($N = 348,568$) and 2022 ($N = 339,264$). Evaluation accounted for complex survey design features (`_LLCPWT`, `_STSTR`, `_PSU`) using Taylor series linearization.</p>
+<p><strong>Results:</strong> Pre-split SMOTE produced an artifactual $+0.1566$ ROC-AUC inflation (0.9664 vs. 0.8098 clean, $p < 0.0001$), driven by synthetic near-duplicate evaluation contamination. Clean training-only SMOTE degraded probability calibration (Brier score increased $+38.1\%$ from 0.0657 to 0.0907, $p < 0.0001$) without improving ranking discrimination over unresampled trees (ROC-AUC 0.8371). The default threshold ($\tau = 0.50$) collapsed under $8.56\%$ prevalence, identifying only $9.22\%$ of true positive cases. In contrast, threshold selection on training cross-validation ($\tau^* = 0.0816$) stably achieved the target screening sensitivity across three calendar years: $79.78\%$ in 2020 test, $80.68\%$ in 2021, and $81.96\%$ in 2022, with unweighted ROC-AUC preserved at $0.8371$ (2020), $0.8407$ (2021), and $0.8397$ (2022; independent difference test $p \ge 0.407$). Applying post-stratification survey weights yielded lower population-weighted sensitivity ($75.19\%$ in 2021, $78.72\%$ in 2022) and higher specificity ($80.17\%$ and $78.79\%$) because CDC raking down-weights over-represented elderly respondents. Age subgroup evaluation revealed a dual phenomenon: ranking discrimination degraded in elderly adults (ROC-AUC $\sim 0.735$ in ages 70+ vs. $\sim 0.795$ in ages $<50$, $p < 0.0001$), while fixed-threshold sensitivity varied 3.0-fold ($31.5\%$ to $92.6\%$) across an 11-fold prevalence gradient.</p>
+<p><strong>Conclusions:</strong> Unresampled gradient boosted trees with domain-informed thresholding generalize across multi-year national surveillance waves without synthetic oversampling. Resampling before partitioning generates catastrophic optimistic bias, while training-only resampling distorts probability calibration. Public health AI models must report calibrated probabilities, evaluate domain-specific decision thresholds, distinguish respondent metrics from survey-weighted population estimands, and recognize the retrospective cross-sectional nature of survey-based disease classification.</p>
+<div class="keywords"><strong>Keywords:</strong> Medical Machine Learning; Public Health Surveillance; BRFSS; Data Leakage; Synthetic Oversampling; Probability Calibration; Decision Thresholds; Temporal Validation; Complex Survey Weighting; Algorithmic Disparities.</div>
+</div>
+<p>---</p>
+<h2>1. Introduction</h2>
+<p>Cardiovascular diseases (CVD), encompassing coronary heart disease (CHD) and acute myocardial infarction (MI), remain the leading cause of morbidity, mortality, and healthcare expenditure in the United States and globally [Tsao2023_AHA]. In public health epidemiology, continuous population-level surveillance is vital for tracking disease prevalence, identifying vulnerable demographic subgroups, monitoring health behaviors, and guiding resource allocation. The Behavioral Risk Factor Surveillance System (BRFSS), conducted continuously by the Centers for Disease Control and Prevention (CDC) across all 50 U.S. states, the District of Columbia, and U.S. territories, represents the premier health surveillance system in the world, collecting over 400,000 annual telephone interviews [CDC_BRFSS_Overview].</p>
+<p>With the rapid expansion of machine learning (ML) and artificial intelligence (AI) in medicine, researchers have increasingly applied supervised classification algorithms to the BRFSS to predict cardiovascular disease [Jahed2023_ICSCA; @Aiosa2023_IEEEAccess]. However, the translation of modern machine learning to population survey microdata is fraught with deep methodological vulnerabilities that undermine the scientific validity and clinical interpretability of published findings.</p>
+<h3>1.1 Methodological Vulnerabilities in Survey-Based Machine Learning</h3>
+<p>Four pervasive methodological pitfalls characterize the current literature on population health survey machine learning:</p>
+<div class="reference-item"><strong>1.</strong> <strong>Pre-Split Resampling Data Leakage:</strong> Cardiovascular disease exhibits substantial class imbalance in cross-sectional population samples (positive prevalence typically ranges from $6\%$ to $9\%$). To combat this imbalance, numerous studies apply synthetic oversampling techniques, such as the Synthetic Minority Over-sampling Technique (SMOTE) [@Chawla2002_JAIR], to the entire dataset *before* performing cross-validation or train-test partitioning. As demonstrated theoretically by Vandewiele et al. [@Vandewiele2021_ML] and reviewed by Kapoor and Narayanan [@Kapoor2023_Patterns], this practice leaks synthetic copies of evaluation observations into the training partition, creating artificial performance inflation that fails to generalize.</div>
+<div class="reference-item"><strong>2.</strong> <strong>Probability Calibration Distortion from Resampling:</strong> When oversampling or synthetic resampling is restricted strictly to training folds, its effect on probability calibration is rarely evaluated. As emphasized by Van Calster et al. [@VanCalster2019_BMCMed] and Steyerberg et al. [@Steyerberg2010_Epidemiology], discriminative metrics such as the Area Under the Receiver Operating Characteristic Curve (ROC-AUC) are invariant to monotonic probability transformations, blinding investigators to severe probability distortions introduced by artificial class rebalancing.</div>
+<div class="reference-item"><strong>3.</strong> <strong>The Collapse of Default Decision Thresholds:</strong> The vast majority of published studies evaluate binary classifiers using the default decision threshold of $\tau = 0.50$ [@Jahed2023_ICSCA]. Under an $8.5\%$ positive prevalence, a threshold of $0.50$ requires the model to be over six times more confident than the baseline prior before predicting a positive class, causing sensitivity to collapse to $<10\%$ and rendering models useless for population screening.</div>
+<div class="reference-item"><strong>4.</strong> <strong>Lack of Out-of-Time Temporal Validation:</strong> Almost all existing BRFSS machine learning benchmarks evaluate models exclusively via single-year cross-sectional random splits. Random train-test splits from the same annual cohort cannot evaluate robustness against real-world temporal distribution shifts, changing survey response rates, questionnaire rotations, or evolving population demographics.</div>
+<h3>1.2 Outcome Definition and Scientific Boundaries</h3>
+<p>To establish scientific integrity, the classification target of this study must be defined with absolute precision. The target variable represents self-reported lifetime physician-diagnosed myocardial infarction or coronary heart disease/angina, standardized via the CDC calculated variable <code>_MICHD</code>.</p>
+<p>This is strictly a <strong>retrospective cross-sectional survey-status classification task</strong>. Survey respondents are community-dwelling individuals who have survived their cardiovascular events. Consequently, this study does <strong>not</strong> evaluate:</p>
+<ul><li>Prospective 10-year incident cardiovascular risk (e.g., Framingham or ASCVD risk scores).</li></ul>
+<ul><li>Future acute myocardial infarction or cardiac arrest prediction.</li></ul>
+<ul><li>In-hospital survival or cardiovascular mortality prediction.</li></ul>
+<ul><li>Causal identification of modifiable risk factors.</li></ul>
+<h3>1.3 Primary and Supporting Research Questions</h3>
+<p>This investigation addresses the following primary research question:</p>
+<p>> <em>How do evaluation leakage, class-imbalance handling methods, and operating-threshold selection affect the reliability, probability calibration, and multi-year temporal generalization of machine learning models classifying self-reported cardiovascular disease status in population health survey data?</em></p>
+<p>We address two supporting research questions:</p>
+<ol><li><em>How much predictive performance is associated with demographic features and self-reported general health status compared with behavioral lifestyle variables?</em></li></ol>
+<ol><li><em>How stable are discrimination, calibration, and threshold-dependent screening performance across demographic age subgroups and subsequent out-of-time BRFSS surveillance waves?</em></li></ol>
+<p>---</p>
+<h2>2. Related Work</h2>
+<h3>2.1 BRFSS and Population Survey Cardiovascular Classification</h3>
+<p>A substantial body of literature has explored machine learning algorithms on the BRFSS dataset. For example, Jahed et al. [Jahed2023_ICSCA] benchmarked multiple classifiers on the 2020 BRFSS dataset, but evaluated exclusively at the default threshold <em>\tau = 0.50</em>, reporting sensitivity values below <em>20\%</em> and concluding that machine learning models struggle to detect heart disease without severe accuracy penalties. Aiosa et al. [Aiosa2023_IEEEAccess] applied SHAP explainability to BRFSS comorbidities, but applied SMOTE for class balancing without evaluating probability calibration or testing temporal stability across subsequent survey years.</p>
+<h3>2.2 Class Imbalance and Resampling Leakage</h3>
+<p>Class imbalance has long been recognized as a challenge in medical machine learning [He2009_TKDE]. Synthetic oversampling (SMOTE) generates synthetic minority examples along feature-space line segments connecting <em>k</em>-nearest neighbors [Chawla2002_JAIR]. Vandewiele et al. [Vandewiele2021_ML] demonstrated that when SMOTE is applied prior to dataset partitioning, synthetic samples in the test fold share parent observations with the training fold, violating the fundamental assumption of statistical independence. Kapoor and Narayanan [Kapoor2023_Patterns] reviewed 329 machine learning studies across 17 scientific fields, identifying pre-split data leakage as a leading cause of unreproducible claims.</p>
+<h3>2.3 Probability Calibration and Threshold Selection</h3>
+<p>Van Calster et al. [VanCalster2019_BMCMed] established a hierarchical framework for risk model calibration, demonstrating that uncalibrated risk predictions lead to suboptimal clinical decision-making even when ROC-AUC appears high. Steyerberg et al. [Steyerberg2010_Epidemiology] demonstrated that decision-threshold selection must reflect clinical utility and disease prevalence rather than arbitrary mathematical cutoffs.</p>
+<h3>2.4 Demographic Shortcut Learning and Complex Survey Evaluation</h3>
+<p>Obermeyer et al. [Obermeyer2019_Science] demonstrated that predictive algorithms in population health can inadvertently exploit demographic proxies, creating severe operational disparities across patient groups. Furthermore, although the CDC BRFSS relies on complex survey probability sampling (stratification, clustering, and post-stratification raking weights) [CDC_BRFSS_Overview; @Heeringa2017_Survey], machine learning researchers almost universally treat survey respondents as independent and identically distributed (i.i.d.) observations, failing to assess how sampling weights alter population-representative performance.</p>
+<p>---</p>
+<h2>3. Data and Study Population</h2>
+<h3>3.1 Data Sources and Survey Administration</h3>
+<p>We utilized official microdata from the CDC Behavioral Risk Factor Surveillance System across three consecutive annual cycles: 2020, 2021, and 2022. The BRFSS collects health-related telephone interview data from civilian, non-institutionalized U.S. adults aged <em>\ge 18</em> years using computer-assisted telephone interviewing (CATI) across landline and cellular telephones [CDC_BRFSS_Overview].</p>
+<h3>3.2 Target Variable Harmonization</h3>
+<p>The classification target was defined across all three waves using the CDC calculated variable <code>_MICHD</code>. In the 2020 cleaned dataset, this variable is labeled <code>HeartDisease</code>. It is constructed from two core survey questions:</p>
+<ol><li>`CVDINFR4`: <em>"Has a doctor, nurse, or other health professional ever told you that you had a heart attack, also called a myocardial infarction?"</em> (1 = Yes, 2 = No).</li></ol>
+<ol><li>`CVDCRHD4`: <em>"Has a doctor, nurse, or other health professional ever told you that you had angina or coronary heart disease?"</em> (1 = Yes, 2 = No).</li></ol>
+<p>Respondents reporting <code>Yes</code> to either condition are classified as positive (<code>1</code>); respondents reporting <code>No</code> to both are classified as negative (<code>0</code>). Respondents with missing, refused, or "don't know" responses are excluded.</p>
+<h3>3.3 Study Population and Cohort Flow</h3>
+<p>Figure 1 illustrates the study design, cohort selection, model development, and external temporal validation pipeline.</p>
+<p><code></code>`</p>
+<p>+---------------------------------------------------------------------------------------------------+</p>
+
+    <div class="figure-container">
+      <img src="figures/study_design_workflow.png" alt="Figure 1: Study Design and Workflow">
+      <div class="figure-caption"><strong>Figure 1:</strong> Study design and experimental workflow across BRFSS 2020 development and 2021&ndash;2022 temporal surveillance validation.</div>
+    </div>
+    <table class="academic-table">
+  <thead>
+    <tr>
+      <th>CDC Behavioral Risk Factor Surveillance System (BRFSS) Microdata</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>+---------------------------------------------------------------------------------------------------+</p>
+<p>|</p>
+<p>+------------------------+------------------------+</p>
+<p>|                                                 |</p>
+<p>v                                                 v</p>
+<p>+---------------------------------------------------+     +-----------------------------------------+</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>BRFSS 2020 Development Cohort</th>
+      <th></th>
+      <th>Temporal External Validation Cohorts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Target: Self-reported lifetime MI/CHD (_MICHD)</td>
+      <td></td>
+      <td>- BRFSS 2022: N = 339,264 (76.2%)</td>
+    </tr>
+  </tbody>
+</table>
+<p>+---------------------------------------------------+     +-----------------------------------------+</p>
+<p>|                                                 |</p>
+<p>v                                                 |</p>
+<p>+---------------------------------------------------+                      |</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Internal Stratified Partition (80/20)</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>- Held-Out Test Set: N = 63,959 (Frozen Eval)</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+<p>+---------------------------------------------------+                      |</p>
+<p>|                                                 |</p>
+<p>v                                                 |</p>
+<p>+---------------------------------------------------+                      |</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Methodological Experiments & Audits (2020)</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>- Imbalance Benchmarking: SMOTE, Weights, BRF</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>- Threshold Optimization: Target 80% Recall</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>- Demographic Shortcut & Feature Ablation</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+<p>+---------------------------------------------------+                      |</p>
+<p>|                                                 |</p>
+<p>v                                                 |</p>
+<p>+---------------------------------------------------+                      |</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Frozen Model Handoff</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>- Frozen Decision Threshold: tau = 0.0816</td>
+    </tr>
+    <tr>
+      <td>- 2021 Sleep Harmonization: Median (7.0 hrs)</td>
+    </tr>
+    <tr>
+      <td>- 2022 Full Feature Pipeline (Empirical Sleep)</td>
+    </tr>
+  </tbody>
+</table>
+<p>+---------------------------------------------------+</p>
+<p>|</p>
+<p>v</p>
+<p>+---------------------------------------------------------------------------------------------------+</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Multi-Wave Temporal & Complex Survey Evaluation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2. Domain-Informed Screening: Sensitivity, Specificity, PPV, NPV at frozen tau = 0.0816</td>
+    </tr>
+    <tr>
+      <td>3. Complex Survey Weighting: Taylor Series Linearization (_LLCPWT, _STSTR, _PSU, DEFF)</td>
+    </tr>
+    <tr>
+      <td>4. Subgroup Fairness: Age (<50, 50-69, 70+), Biological Sex, Race/Ethnicity</td>
+    </tr>
+  </tbody>
+</table>
+<p>+---------------------------------------------------------------------------------------------------+</p>
+<p><code></code>`</p>
+<p><em>Figure 1: Study design and experimental workflow across BRFSS 2020 development and 2021–2022 out-of-time surveillance validation.</em></p>
+<p>Table 1 summarizes the sample sizes, complete-case retention rates, and target disease prevalence across all three survey cycles.</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Surveillance Wave</th>
+      <th>Raw Ingested Records</th>
+      <th>Complete Cases Evaluated</th>
+      <th>Excluded Records</th>
+      <th>Target Positive Cases</th>
+      <th>Unweighted Prevalence (%)</th>
+      <th>Survey-Weighted Prevalence (%)</th>
+      <th>Primary Evaluation Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>BRFSS 2020</strong></td>
+      <td><em>319,795</em></td>
+      <td><em>319,795</em> (<em>100.0\%</em>)</td>
+      <td><em>0</em> (Kaggle pre-filtered)</td>
+      <td><em>27,373</em></td>
+      <td><em>8.56\%</em></td>
+      <td>N/A (unweighted release)</td>
+      <td>80% Train (<em>N=255,836</em>) / 20% Test (<em>N=63,959</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>BRFSS 2021</strong></td>
+      <td><em>438,693</em></td>
+      <td><em>348,568</em> (<em>79.46\%</em>)</td>
+      <td><em>90,125</em> (<em>20.54\%</em>)</td>
+      <td><em>28,444</em></td>
+      <td><em>8.16\%</em></td>
+      <td><em>6.18\%</em> (SE: <em>0.08\%</em>, DEFF: <em>4.13</em>)</td>
+      <td>External Temporal Validation Wave 1 (Median / NaN)</td>
+    </tr>
+    <tr>
+      <td><strong>BRFSS 2022</strong></td>
+      <td><em>445,132</em></td>
+      <td><em>339,264</em> (<em>76.22\%</em>)</td>
+      <td><em>105,868</em> (<em>23.78\%</em>)</td>
+      <td><em>30,256</em></td>
+      <td><em>8.92\%</em></td>
+      <td><em>6.74\%</em> (SE: <em>0.08\%</em>, DEFF: <em>3.51</em>)</td>
+      <td>External Temporal Validation Wave 2 (<em>100\%</em> Empirical)</td>
+    </tr>
+  </tbody>
+</table>
+<div class="table-caption">Table 1: Cohort characteristics, complete-case sample flow, and target prevalence across survey waves.</div>
+<h3>3.4 Missingness and Complete-Case Selection</h3>
+<p>In the 2021 and 2022 raw CDC microdata, complete-case evaluation retained <em>79.46\%</em> (<em>N = 348,568</em>) and <em>76.22\%</em> (<em>N = 339,264</em>) of respondents, respectively. Forensic analysis of excluded respondents revealed that target disease prevalence differed by only <em>0.11\%</em> in 2021 (<em>8.16\%</em> included vs. <em>8.05\%</em> excluded) and <em>-0.50\%</em> in 2022 (<em>8.92\%</em> included vs. <em>9.42\%</em> excluded), while elderly representation (ages <em>\ge 70</em>) was identical (<em>24.5\%</em> vs. <em>24.0\%</em>).</p>
+<p>However, excluded respondents contained a higher proportion of females (<em>+7.4\%</em> to <em>+8.5\%</em>) and racial/ethnic minorities (<em>+5.0\%</em> to <em>+5.5\%</em>), driven by item non-response on body weight/height (refusal to calculate BMI: <em>10.7\%</em> in 2021, <em>11.0\%</em> in 2022) and alcohol consumption frequency (<em>8.0\%</em> in 2021, <em>11.2\%</em> in 2022).</p>
+<h3>3.5 Feature Group Definitions</h3>
+<p>The 17 candidate features were structured into four explicit conceptual domains to enable controlled ablation and shortcut learning audits:</p>
+<ul><li><strong>Group A (Demographics):</strong> Age Category (`_AGEG5YR`, 14-level ordinal brackets), Biological Sex (`_SEX`, binary), Race/Ethnicity (`_IMPRACE`, 6 nominal categories).</li></ul>
+<ul><li><strong>Group B (Behavioral Lifestyle):</strong> Body Mass Index (`_BMI5`, continuous), Smoking (`SMOKE100`, binary <em>\ge 100</em> lifetime cigarettes), Heavy Alcohol Drinking (`_RFDRHV`, binary), Physical Activity (`_TOTINDA`, binary past 30-day leisure exercise), Sleep Duration (`SLEPTIM1`, integer hours).</li></ul>
+<ul><li><strong>Group C (Self-Reported Health Status):</strong> General Health (`GENHLTH`, 5-point ordinal scale: Excellent, Very good, Good, Fair, Poor). <em>Note: `GENHLTH` is strictly a subjective health status indicator, not a behavioral lifestyle variable.</em></li></ul>
+<ul><li><strong>Group D (Clinical Conditions and Functional Limitations):</strong> History of Stroke (`CVDSTRK3`), Diabetes Status (`DIABETE4`, 4 categories), Asthma (`ASTHMA3`), Kidney Disease (`CHCKDNY2`), Skin Cancer (`CHCSCNCR`), Difficulty Walking / Climbing Stairs (`DIFFWALK`), Days of Poor Physical Health (`PHYSHLTH`, 0–30), Days of Poor Mental Health (`MENTHLTH`, 0–30).</li></ul>
+<p>---</p>
+<h2>4. Methodology</h2>
+<h3>4.1 Development Partitioning and Cross-Validation</h3>
+<p>The BRFSS 2020 development dataset (<em>N = 319,795</em>) was partitioned into an <em>80\%</em> training set (<em>N = 255,836</em>; <em>21,898</em> positive cases) and a <em>20\%</em> held-out test set (<em>N = 63,959</em>; <em>5,475</em> positive cases) using stratified random sampling on the target variable. Within the training set, 5-fold stratified cross-validation was used for model tuning, out-of-fold probability generation, threshold optimization, and calibrator fitting. All preprocessing estimators (scalers, encoders) were fitted strictly on training partitions to prevent global scaling leakage.</p>
+<h3>4.2 Machine Learning Architectures</h3>
+<p>We evaluated four model families:</p>
+<div class="reference-item"><strong>1.</strong> <strong>Gradient Boosted Decision Trees (XGBoost):</strong> Optimized with `n_estimators=300`, `max_depth=5`, `learning_rate=0.05`, `subsample=0.8`, `colsample_bytree=0.8`, and early stopping based on validation log loss [@Chen2016_XGBoost].</div>
+<div class="reference-item"><strong>2.</strong> <strong>Random Forest:</strong> Configured with 300 estimators, Gini impurity split criterion, and square-root feature subsampling [@Breiman2001_RF].</div>
+<div class="reference-item"><strong>3.</strong> <strong>Logistic Regression:</strong> ElasticNet and L2-regularized logistic regression fitted via coordinate descent.</div>
+<div class="reference-item"><strong>4.</strong> <strong>Balanced Random Forest:</strong> Ensemble decision trees utilizing balanced bootstrap undersampling per tree.</div>
+<h3>4.3 Class-Imbalance Handling Strategies</h3>
+<p>We benchmarked four class-imbalance paradigms:</p>
+<ul><li><strong>Unresampled Learning:</strong> Models trained on the empirical <em>8.56\%</em> natural prevalence without resampling.</li></ul>
+<ul><li><strong>Algorithmic Cost-Sensitive Weighting:</strong> Loss function weighting proportional to reciprocal class frequencies (`scale_pos_weight=10.68`).</li></ul>
+<ul><li><strong>Clean Training-Only Synthetic Resampling:</strong> SMOTE applied strictly inside cross-validation training folds at minority-to-majority ratios of <em>0.25</em>, <em>0.50</em>, <em>0.75</em>, and <em>1.00</em> (1:1 balance), alongside SMOTE-NC (Nominal Continuous), Borderline-SMOTE, SMOTE-Tomek, and Random Oversampling.</li></ul>
+<ul><li><strong>Deliberately Leaked Pre-Split Resampling:</strong> A negative methodological control wherein SMOTE was applied across the entire development dataset <em>prior</em> to cross-validation and test partitioning.</li></ul>
+<h3>4.4 Domain-Informed Threshold Selection</h3>
+<p>To resolve the collapse of the default <em>\tau = 0.50</em> threshold, we optimized decision thresholds on the 2020 training out-of-fold (OOF) predicted probabilities <em>\hat{p}_{\text{OOF}}</em>. We evaluated three threshold criteria:</p>
+<div class="reference-item"><strong>1.</strong> <strong>Target Screening Sensitivity ($80\%$ Recall):</strong> Selection of the threshold $\tau^*$ satisfying:</div>
+<p><em></em>\tau^* = \arg\max_\tau \left\{ \tau \in (0, 1) \;\middle|\; \text{Sensitivity}(\tau; \hat{p}_{\text{OOF}}) \ge 0.80 \right\}<em></em></p>
+<div class="reference-item"><strong>2.</strong> <strong>Maximum F1-Score:</strong> Maximization of harmonic mean of precision and recall.</div>
+<div class="reference-item"><strong>3.</strong> <strong>Youden's J Statistic:</strong> Maximization of $J(\tau) = \text{Sensitivity}(\tau) + \text{Specificity}(\tau) - 1$ [@Youden1950_Cancer].</div>
+<p>Grid search on OOF probabilities at 1,000-point resolution yielded <em>\tau^* = 0.081612</em>.</p>
+<h3>4.5 Probability Calibration</h3>
+<p>Probability calibration was assessed using the Brier score [Brier1950_MWR], Expected Calibration Error (ECE; 10 quantile-spaced bins), calibration slope, and calibration intercept [Steyerberg2010_Epidemiology; @VanCalster2019_BMCMed]. We benchmarked raw uncalibrated probabilities against Platt sigmoid scaling [Platt1999_Platt] and non-parametric isotonic regression [Zadrozny2002_Isotonic], fitted strictly on out-of-fold training probabilities.</p>
+<h3>4.6 Complex Survey Design Weighting</h3>
+<p>To evaluate population-representative performance across the 2021 and 2022 surveillance cohorts, we incorporated CDC complex survey design variables:</p>
+<ul><li>Sampling weight: `_LLCPWT`.</li></ul>
+<ul><li>Stratum: `_STSTR`.</li></ul>
+<ul><li>Primary Sampling Unit (cluster): `_PSU`.</li></ul>
+<p>Design-based variance estimation was computed using first-order Taylor series linearization for ratio estimators [Heeringa2017_Survey; @Wolter2007_Variance; @Lumley2004_Survey], calculating design effects (<em>\text{DEFF}</em>) and design-aware <em>95\%</em> confidence intervals.</p>
+<p>---</p>
+<h2>5. Leakage and Imbalance Experiments</h2>
+    <div class="figure-container">
+      <img src="figures/leakage_comparison.png" alt="Figure 2: Resampling Data Leakage Comparison">
+      <div class="figure-caption"><strong>Figure 2:</strong> Clean baseline vs. clean training-only SMOTE vs. invalid pre-split SMOTE leakage. Pre-split oversampling artificially inflates ROC-AUC by +0.1566 and PR-AUC to 0.9717 through synthetic observation contamination across partitions.</div>
+    </div>
+    
+<h3>5.1 Empirical Demonstration of Resampling Leakage</h3>
+<p>Table 2 presents the comparison between clean evaluation pipelines and the deliberately leaked pre-split resampling control on the 2020 held-out test partition (<em>N = 63,959</em>).</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Pipeline</th>
+      <th>Model</th>
+      <th>Training N</th>
+      <th>Test N</th>
+      <th>Synthetic Samples in Test</th>
+      <th>ROC-AUC (95% CI)</th>
+      <th>PR-AUC</th>
+      <th>Sensitivity (%)</th>
+      <th>Specificity (%)</th>
+      <th>Brier Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Clean Baseline (No Resampling)</strong></td>
+      <td>XGBoost</td>
+      <td><em>255,836</em></td>
+      <td><em>63,959</em></td>
+      <td><em>0</em></td>
+      <td><strong>0.8371</strong> [0.8313, 0.8424]</td>
+      <td><strong>0.3455</strong></td>
+      <td><em>9.22\%</em></td>
+      <td><em>99.34\%</em></td>
+      <td><strong>0.0657</strong></td>
+    </tr>
+    <tr>
+      <td>Clean Baseline (No Resampling)</td>
+      <td>Random Forest</td>
+      <td><em>255,836</em></td>
+      <td><em>63,959</em></td>
+      <td><em>0</em></td>
+      <td><strong>0.8297</strong> [0.8236, 0.8352]</td>
+      <td><strong>0.3373</strong></td>
+      <td><em>4.02\%</em></td>
+      <td><em>99.74\%</em></td>
+      <td><strong>0.0664</strong></td>
+    </tr>
+    <tr>
+      <td>Clean Baseline (No Resampling)</td>
+      <td>Logistic Regression</td>
+      <td><em>255,836</em></td>
+      <td><em>63,959</em></td>
+      <td><em>0</em></td>
+      <td><strong>0.8366</strong> [0.8308, 0.8417]</td>
+      <td><strong>0.3488</strong></td>
+      <td><em>10.72\%</em></td>
+      <td><em>99.23\%</em></td>
+      <td><strong>0.0657</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Clean SMOTE (Training-Only, 1:1)</strong></td>
+      <td>XGBoost</td>
+      <td><em>467,876</em></td>
+      <td><em>63,959</em></td>
+      <td><em>0</em></td>
+      <td><strong>0.8098</strong> [0.8034, 0.8154]</td>
+      <td><strong>0.2894</strong></td>
+      <td><em>37.22\%</em></td>
+      <td><em>92.37\%</em></td>
+      <td><strong>0.0907</strong></td>
+    </tr>
+    <tr>
+      <td>Clean SMOTE (Training-Only, 1:1)</td>
+      <td>Random Forest</td>
+      <td><em>467,876</em></td>
+      <td><em>63,959</em></td>
+      <td><em>0</em></td>
+      <td><strong>0.8236</strong> [0.8173, 0.8292]</td>
+      <td><strong>0.3222</strong></td>
+      <td><em>61.63\%</em></td>
+      <td><em>84.00\%</em></td>
+      <td><strong>0.1299</strong></td>
+    </tr>
+    <tr>
+      <td>Clean SMOTE (Training-Only, 1:1)</td>
+      <td>Logistic Regression</td>
+      <td><em>467,876</em></td>
+      <td><em>63,959</em></td>
+      <td><em>0</em></td>
+      <td><strong>0.8352</strong> [0.8293, 0.8405]</td>
+      <td><strong>0.3461</strong></td>
+      <td><em>78.01\%</em></td>
+      <td><em>74.09\%</em></td>
+      <td><strong>0.1685</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Leaked Pre-Split SMOTE Control</strong></td>
+      <td>XGBoost</td>
+      <td><em>467,875</em></td>
+      <td><em>116,969</em></td>
+      <td><em>53,009</em></td>
+      <td><strong>0.9664</strong> [0.9654, 0.9672]</td>
+      <td><strong>0.9717</strong></td>
+      <td><em>88.08\%</em></td>
+      <td><em>91.85\%</em></td>
+      <td><strong>0.0751</strong></td>
+    </tr>
+    <tr>
+      <td>Leaked Pre-Split SMOTE Control</td>
+      <td>Random Forest</td>
+      <td><em>467,875</em></td>
+      <td><em>116,969</em></td>
+      <td><em>53,009</em></td>
+      <td><strong>0.9187</strong> [0.9170, 0.9201]</td>
+      <td><strong>0.9223</strong></td>
+      <td><em>82.81\%</em></td>
+      <td><em>83.57\%</em></td>
+      <td><strong>0.1247</strong></td>
+    </tr>
+    <tr>
+      <td>Leaked Pre-Split SMOTE Control</td>
+      <td>Logistic Regression</td>
+      <td><em>467,875</em></td>
+      <td><em>116,969</em></td>
+      <td><em>53,009</em></td>
+      <td><strong>0.8426</strong> [0.8404, 0.8448]</td>
+      <td><strong>0.8194</strong></td>
+      <td><em>79.10\%</em></td>
+      <td><em>74.23\%</em></td>
+      <td><strong>0.1605</strong></td>
+    </tr>
+  </tbody>
+</table>
+<div class="table-caption">Table 2: Comparison of clean baseline models, clean training-only SMOTE, and invalid pre-split resampling leakage pipelines on the BRFSS 2020 held-out evaluation set.</div>
+<p>Applying SMOTE prior to partitioning inflated XGBoost ROC-AUC from <em>0.8098</em> to <em>0.9664</em> (an artifactual jump of <em>+0.1566</em>, <em>p < 0.0001</em>) and PR-AUC from <em>0.2894</em> to <em>0.9717</em>. For Random Forest, pre-split SMOTE inflated ROC-AUC from <em>0.8236</em> to <em>0.9187</em> (<em>+0.0951</em>, <em>p < 0.0001</em>). This inflation occurred because <em>53,009</em> synthetic observations in the test fold were interpolated directly from training-fold positive cases, creating near-identical feature twins across partitions. In contrast, leaked global standard scaling produced virtually zero metric inflation (<em>\Delta \text{AUC} \le 0.0001</em>).</p>
+
+    <div class="figure-container">
+      <img src="figures/imbalance_metric_comparison.png" alt="Figure 3: Imbalance Methods Comparison">
+      <div class="figure-caption"><strong>Figure 3:</strong> Model discrimination and probability calibration across class-imbalance handling techniques. Clean training-only SMOTE degrades Brier calibration error without improving rank-order discrimination over unresampled gradient boosted trees.</div>
+    </div>
+    <h3>5.2 Impact of Training-Only Resampling on Discrimination and Calibration</h3>
+<p>Table 3 summarizes model performance across imbalance handling techniques trained cleanly inside cross-validation.</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Imbalance Method</th>
+      <th>Model Architecture</th>
+      <th>Test ROC-AUC (95% CI)</th>
+      <th>Test PR-AUC (95% CI)</th>
+      <th>Test Brier Score</th>
+      <th>Test Recall (%)</th>
+      <th>Test Specificity (%)</th>
+      <th>Test F1-Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>No Resampling</strong></td>
+      <td>XGBoost</td>
+      <td><strong>0.8371</strong> [0.8313, 0.8424]</td>
+      <td><strong>0.3455</strong> [0.3313, 0.3590]</td>
+      <td><strong>0.0657</strong></td>
+      <td><em>9.22\%</em></td>
+      <td><em>99.34\%</em></td>
+      <td><em>0.1587</em></td>
+    </tr>
+    <tr>
+      <td>No Resampling</td>
+      <td>Logistic Regression</td>
+      <td><strong>0.8366</strong> [0.8308, 0.8417]</td>
+      <td><strong>0.3488</strong> [0.3354, 0.3618]</td>
+      <td><strong>0.0657</strong></td>
+      <td><em>10.72\%</em></td>
+      <td><em>99.23\%</em></td>
+      <td><em>0.1802</em></td>
+    </tr>
+    <tr>
+      <td><strong>Class Weighting</strong></td>
+      <td>XGBoost</td>
+      <td><strong>0.8367</strong> [0.8311, 0.8416]</td>
+      <td><strong>0.3457</strong> [0.3315, 0.3596]</td>
+      <td><strong>0.1645</strong></td>
+      <td><em>77.75\%</em></td>
+      <td><em>74.33\%</em></td>
+      <td><em>0.3441</em></td>
+    </tr>
+    <tr>
+      <td>Class Weighting</td>
+      <td>Logistic Regression</td>
+      <td><strong>0.8372</strong> [0.8314, 0.8423]</td>
+      <td><strong>0.3485</strong> [0.3349, 0.3615]</td>
+      <td><strong>0.1676</strong></td>
+      <td><em>77.48\%</em></td>
+      <td><em>74.65\%</em></td>
+      <td><em>0.3457</em></td>
+    </tr>
+    <tr>
+      <td><strong>SMOTE (0.25 Ratio)</strong></td>
+      <td>XGBoost</td>
+      <td><strong>0.8321</strong> [0.8262, 0.8372]</td>
+      <td><strong>0.3395</strong> [0.3253, 0.3532]</td>
+      <td><strong>0.0675</strong></td>
+      <td><em>12.55\%</em></td>
+      <td><em>98.94\%</em></td>
+      <td><em>0.2026</em></td>
+    </tr>
+    <tr>
+      <td><strong>SMOTE (0.50 Ratio)</strong></td>
+      <td>XGBoost</td>
+      <td><strong>0.8230</strong> [0.8170, 0.8284]</td>
+      <td><strong>0.3196</strong> [0.3070, 0.3326]</td>
+      <td><strong>0.0743</strong></td>
+      <td><em>22.34\%</em></td>
+      <td><em>97.06\%</em></td>
+      <td><em>0.2905</em></td>
+    </tr>
+    <tr>
+      <td><strong>SMOTE (0.75 Ratio)</strong></td>
+      <td>XGBoost</td>
+      <td><strong>0.8156</strong> [0.8094, 0.8210]</td>
+      <td><strong>0.3029</strong> [0.2906, 0.3153]</td>
+      <td><strong>0.0822</strong></td>
+      <td><em>30.78\%</em></td>
+      <td><em>94.74\%</em></td>
+      <td><em>0.3292</em></td>
+    </tr>
+    <tr>
+      <td><strong>SMOTE (1.00 Ratio)</strong></td>
+      <td>XGBoost</td>
+      <td><strong>0.8098</strong> [0.8034, 0.8154]</td>
+      <td><strong>0.2894</strong> [0.2775, 0.3012]</td>
+      <td><strong>0.0907</strong></td>
+      <td><em>37.22\%</em></td>
+      <td><em>92.37\%</em></td>
+      <td><em>0.3403</em></td>
+    </tr>
+    <tr>
+      <td><strong>SMOTE-NC</strong></td>
+      <td>XGBoost</td>
+      <td><strong>0.8277</strong> [0.8217, 0.8327]</td>
+      <td><strong>0.3274</strong> [0.3138, 0.3399]</td>
+      <td><strong>0.0744</strong></td>
+      <td><em>24.93\%</em></td>
+      <td><em>96.58\%</em></td>
+      <td><em>0.3088</em></td>
+    </tr>
+    <tr>
+      <td><strong>Borderline SMOTE</strong></td>
+      <td>XGBoost</td>
+      <td><strong>0.8237</strong> [0.8176, 0.8293]</td>
+      <td><strong>0.3096</strong> [0.2969, 0.3217]</td>
+      <td><strong>0.0756</strong></td>
+      <td><em>26.37\%</em></td>
+      <td><em>95.93\%</em></td>
+      <td><em>0.3105</em></td>
+    </tr>
+    <tr>
+      <td><strong>Balanced Random Forest</strong></td>
+      <td>Balanced RF</td>
+      <td><strong>0.8314</strong> [0.8255, 0.8369]</td>
+      <td><strong>0.3426</strong> [0.3293, 0.3554]</td>
+      <td><strong>0.1653</strong></td>
+      <td><em>75.69\%</em></td>
+      <td><em>75.31\%</em></td>
+      <td><em>0.3445</em></td>
+    </tr>
+  </tbody>
+</table>
+<div class="table-caption">Table 3: Baseline model discrimination, probability calibration, and threshold-dependent performance across class-imbalance handling strategies.</div>
+<p>Clean training-only SMOTE did not improve ranking discrimination; instead, as the SMOTE ratio increased from <em>0.25</em> to <em>1.00</em>, XGBoost ROC-AUC monotonically decreased from <em>0.8371</em> down to <em>0.8098</em>, and PR-AUC dropped from <em>0.3455</em> to <em>0.2894</em>. Concurrently, probability calibration degraded: the Brier score increased by <em>+38.1\%</em> (from <em>0.0657</em> to <em>0.0907</em>; difference <em>\Delta = +0.0250</em>, <em>\text{SE} = 0.00048</em>, <em>z = -51.82</em>, <em>p < 0.0001</em>). While SMOTE increased default-cutoff sensitivity (<em>37.22\%</em> vs. <em>9.22\%</em>), this gain was achieved entirely through artificial probability distortion rather than superior class separation.</p>
+<p>---</p>
+<h2>6. Threshold Selection and Probability Calibration</h2>
+    <div class="figure-container">
+      <img src="figures/threshold_metric_curves.png" alt="Figure 5: Operating Threshold Dynamics">
+      <div class="figure-caption"><strong>Figure 5:</strong> Operating threshold trade-off curves for unresampled XGBoost. Evaluating at the default cutoff (&tau; = 0.50) results in sensitivity collapse (9.22%), whereas the domain-informed screening threshold (&tau;* = 0.0816) stably captures ~80% of true positive cases.</div>
+    </div>
+    
+<h3>6.1 Failure of the Default Threshold and Operating Point Selection</h3>
+<p>Under an <em>8.56\%</em> positive prevalence, evaluating unresampled XGBoost at the conventional threshold of <em>\tau = 0.50</em> yielded an accuracy of <em>91.63\%</em>, but detected only <em>505</em> out of <em>5,475</em> positive cases (sensitivity <em>9.2237\%</em>; specificity <em>99.3434\%</em>).</p>
+<p>Table 4 compares the default cutoff with domain-informed operating points optimized on 2020 training out-of-fold probabilities.</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Operating Threshold Point</th>
+      <th>Threshold (<em>\tau</em>)</th>
+      <th>Target Objective</th>
+      <th>Accuracy (%)</th>
+      <th>Precision (%)</th>
+      <th>Recall / Sensitivity (%)</th>
+      <th>Specificity (%)</th>
+      <th>F1-Score</th>
+      <th>True Positives</th>
+      <th>False Positives</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Default Threshold</strong></td>
+      <td><em>0.500000</em></td>
+      <td>Conventional Cutoff</td>
+      <td><strong>91.63%</strong></td>
+      <td><strong>56.81%</strong></td>
+      <td><strong>9.22%</strong> [8.48, 9.91]</td>
+      <td><strong>99.34%</strong> [99.28, 99.41]</td>
+      <td><em>0.1587</em></td>
+      <td><em>505</em></td>
+      <td><em>384</em></td>
+    </tr>
+    <tr>
+      <td><strong>Max F1 Threshold</strong></td>
+      <td><em>0.198081</em></td>
+      <td>Maximize Harmonic Mean</td>
+      <td><strong>86.81%</strong></td>
+      <td><strong>32.33%</strong></td>
+      <td><strong>49.48%</strong> [48.04, 50.89]</td>
+      <td><strong>90.31%</strong> [90.06, 90.57]</td>
+      <td><em>0.3911</em></td>
+      <td><em>2,709</em></td>
+      <td><em>5,669</em></td>
+    </tr>
+    <tr>
+      <td><strong>Target Recall (Coarse Grid)</strong></td>
+      <td><em>0.079293</em></td>
+      <td>Target 80% Recall (100-pt)</td>
+      <td><strong>73.14%</strong></td>
+      <td><strong>21.46%</strong></td>
+      <td><strong>80.37%</strong> [79.09, 81.33]</td>
+      <td><strong>72.47%</strong> [72.11, 72.82]</td>
+      <td><em>0.3388</em></td>
+      <td><em>4,400</em></td>
+      <td><em>16,102</em></td>
+    </tr>
+    <tr>
+      <td><strong>Frozen Screening Threshold (<em>\tau^*</em>)</strong></td>
+      <td><em>0.081612</em></td>
+      <td>Target 80% Recall (1000-pt)</td>
+      <td><strong>73.66%</strong></td>
+      <td><strong>21.72%</strong></td>
+      <td><strong>79.78%</strong> [78.43, 80.85]</td>
+      <td><strong>73.09%</strong> [72.68, 73.50]</td>
+      <td><em>0.3415</em></td>
+      <td><em>4,368</em></td>
+      <td><em>15,738</em></td>
+    </tr>
+  </tbody>
+</table>
+<div class="table-caption">Table 4: Operating threshold trade-offs on the 2020 held-out test partition ($N = 63,959$).</div>
+<p>The coarse (<em>100</em>-point) threshold <em>\tau = 0.079293</em> and the fine (<em>1,000</em>-point) threshold <em>\tau^<em> = 0.081612</em> represent two grid resolutions of the identical optimization objective on the same training out-of-fold probabilities. At <em>\tau^</em> = 0.081612</em>, unresampled XGBoost captured <em>4,368</em> true positives (sensitivity <em>79.78\%</em>, specificity <em>73.09\%</em>, negative predictive value <em>97.48\%</em>), establishing an <em>8.6</em>-fold increase in true positive detection compared to the default threshold (<em>\text{McNemar } z = 62.39</em>, <em>p < 0.0001</em>).</p>
+<h3>6.2 Probability Calibration Results</h3>
+    <div class="figure-container">
+      <img src="figures/calibration_curves_by_wave.png" alt="Figure 6: Calibration Curves Across Waves">
+      <div class="figure-caption"><strong>Figure 6:</strong> Reliability diagrams across BRFSS 2020 development, 2021 temporal wave (median imputation), and 2022 temporal wave. Unresampled tree boosting preserves pristine natural probability calibration (ECE &le; 0.0055).</div>
+    </div>
+    
+<p>Unresampled XGBoost produced exceptional baseline probability calibration:</p>
+<ul><li><strong>Brier Score:</strong> <em>0.065666</em></li></ul>
+<ul><li><strong>Log Loss:</strong> <em>0.227773</em></li></ul>
+<ul><li><strong>Expected Calibration Error (ECE):</strong> <em>0.002621</em></li></ul>
+<ul><li><strong>Calibration Slope:</strong> <em>\beta = 0.984</em> (close to ideal <em>1.0</em>)</li></ul>
+<ul><li><strong>Calibration Intercept:</strong> <em>\alpha = -0.012</em> (close to ideal <em>0.0</em>)</li></ul>
+<p>Post-hoc calibration via isotonic regression yielded marginal ECE reduction (<em>0.002193</em> vs. <em>0.002621</em>) while slightly reducing PR-AUC (<em>0.3401</em> vs. <em>0.3455</em>), whereas Platt sigmoid scaling degraded ECE to <em>0.014300</em>. Because unresampled tree boosting preserved pristine calibration naturally, uncalibrated probabilities with the frozen threshold <em>\tau^* = 0.081612</em> were selected as the definitive model pipeline.</p>
+<p>---</p>
+<h2>7. Demographic and Feature-Group Analysis</h2>
+<h3>7.1 Feature Group Ablation</h3>
+<p>Table 5 details the predictive performance achieved by restricted subsets of features.</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Feature Group Subset</th>
+      <th>Included Feature Domains</th>
+      <th>XGBoost ROC-AUC</th>
+      <th>XGBoost PR-AUC</th>
+      <th><em>\Delta</em> AUC vs. Demographics</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Group A: Demographics Only</strong></td>
+      <td>Age, Sex, Race/Ethnicity</td>
+      <td><strong>0.7603</strong></td>
+      <td><strong>0.2091</strong></td>
+      <td>Ref. (<em>0.0000</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Group A: Age and Sex Only</strong></td>
+      <td>Age, Sex</td>
+      <td><strong>0.7586</strong></td>
+      <td><strong>0.2059</strong></td>
+      <td><em>-0.0017</em></td>
+    </tr>
+    <tr>
+      <td><strong>Group B: Lifestyle Only</strong></td>
+      <td>BMI, Smoking, Alcohol, Physical Activity, Sleep</td>
+      <td><strong>0.6651</strong></td>
+      <td><strong>0.1529</strong></td>
+      <td><em>-0.0952</em></td>
+    </tr>
+    <tr>
+      <td><strong>Group B + GenHealth</strong></td>
+      <td>Lifestyle Features + General Health</td>
+      <td><strong>0.7452</strong></td>
+      <td><strong>0.2298</strong></td>
+      <td><em>-0.0151</em></td>
+    </tr>
+    <tr>
+      <td><strong>Group C: Health Status Only</strong></td>
+      <td>General Health, DiffWalking, Phys/Mental Health</td>
+      <td><strong>0.7802</strong></td>
+      <td><strong>0.2885</strong></td>
+      <td><em>+0.0199</em></td>
+    </tr>
+    <tr>
+      <td><strong>Group E: Non-Demographic Features</strong></td>
+      <td>All Clinical, Lifestyle, and Health Features (No Age/Sex/Race)</td>
+      <td><strong>0.7912</strong></td>
+      <td><strong>0.3019</strong></td>
+      <td><em>+0.0309</em></td>
+    </tr>
+    <tr>
+      <td><strong>Group D: All 17 Features</strong></td>
+      <td>Demographics + Lifestyle + Health Status + Morbidities</td>
+      <td><strong>0.8371</strong></td>
+      <td><strong>0.3455</strong></td>
+      <td><em>+0.0768</em></td>
+    </tr>
+  </tbody>
+</table>
+<div class="table-caption">Table 5: Feature-group ablation benchmark on the 2020 held-out test partition ($N = 63,959$).</div>
+<p>Demographic variables alone (Age, Sex, Race) achieved an ROC-AUC of <em>0.7603</em>. Behavioral lifestyle factors alone achieved an ROC-AUC of only <em>0.6651</em>. Adding self-reported general health (<code>GENHLTH</code>) to lifestyle features increased ROC-AUC by <em>+0.0801</em> to <em>0.7452</em> (<em>z = 23.83</em>, <em>p < 0.0001</em>). Models combining demographics and general health achieved an ROC-AUC of <em>0.8260</em>. The addition of all remaining behavioral lifestyle features (diet, exercise, alcohol, smoking, BMI) added only <em>+0.0111</em> AUC (to <em>0.8371</em>).</p>
+<h3>7.2 Grouped Permutation Importance</h3>
+<p>Grouped permutation feature importance (Table 6) corroborated this finding.</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Feature Name</th>
+      <th>Domain</th>
+      <th>Permutation AUC Drop (Mean <em>\pm</em> SD)</th>
+      <th>95% Confidence Interval</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1</strong></td>
+      <td><strong>AgeCategory</strong></td>
+      <td>Demographic</td>
+      <td><strong>0.11267</strong> <em>\pm</em> 0.00163</td>
+      <td>[0.11013, 0.11435]</td>
+    </tr>
+    <tr>
+      <td><strong>2</strong></td>
+      <td><strong>GenHealth</strong></td>
+      <td>Self-Reported Health Status</td>
+      <td><strong>0.03307</strong> <em>\pm</em> 0.00141</td>
+      <td>[0.03150, 0.03532]</td>
+    </tr>
+    <tr>
+      <td><strong>3</strong></td>
+      <td><strong>Sex</strong></td>
+      <td>Demographic</td>
+      <td><strong>0.01815</strong> <em>\pm</em> 0.00107</td>
+      <td>[0.01624, 0.01941]</td>
+    </tr>
+    <tr>
+      <td><strong>4</strong></td>
+      <td><strong>Stroke</strong></td>
+      <td>Clinical Morbidity</td>
+      <td><strong>0.01278</strong> <em>\pm</em> 0.00058</td>
+      <td>[0.01215, 0.01366]</td>
+    </tr>
+    <tr>
+      <td><strong>5</strong></td>
+      <td><strong>Diabetic</strong></td>
+      <td>Clinical Morbidity</td>
+      <td><strong>0.00553</strong> <em>\pm</em> 0.00044</td>
+      <td>[0.00465, 0.00606]</td>
+    </tr>
+    <tr>
+      <td><strong>6</strong></td>
+      <td><strong>Smoking</strong></td>
+      <td>Behavioral Lifestyle</td>
+      <td><strong>0.00551</strong> <em>\pm</em> 0.00045</td>
+      <td>[0.00479, 0.00604]</td>
+    </tr>
+    <tr>
+      <td><strong>7</strong></td>
+      <td><strong>DiffWalking</strong></td>
+      <td>Functional Limitation</td>
+      <td><strong>0.00271</strong> <em>\pm</em> 0.00035</td>
+      <td>[0.00205, 0.00322]</td>
+    </tr>
+    <tr>
+      <td><strong>8</strong></td>
+      <td><strong>Race</strong></td>
+      <td>Demographic</td>
+      <td><strong>0.00265</strong> <em>\pm</em> 0.00038</td>
+      <td>[0.00196, 0.00313]</td>
+    </tr>
+    <tr>
+      <td><strong>9</strong></td>
+      <td><strong>KidneyDisease</strong></td>
+      <td>Clinical Morbidity</td>
+      <td><strong>0.00168</strong> <em>\pm</em> 0.00010</td>
+      <td>[0.00152, 0.00180]</td>
+    </tr>
+    <tr>
+      <td><strong>10</strong></td>
+      <td><strong>PhysicalHealth</strong></td>
+      <td>Functional Morbidity</td>
+      <td><strong>0.00161</strong> <em>\pm</em> 0.00037</td>
+      <td>[0.00094, 0.00206]</td>
+    </tr>
+    <tr>
+      <td><strong>11</strong></td>
+      <td><strong>BMI</strong></td>
+      <td>Anthropometric / Lifestyle</td>
+      <td><strong>0.00142</strong> <em>\pm</em> 0.00033</td>
+      <td>[0.00099, 0.00205]</td>
+    </tr>
+    <tr>
+      <td><strong>12</strong></td>
+      <td><strong>Asthma</strong></td>
+      <td>Clinical Morbidity</td>
+      <td><strong>0.00100</strong> <em>\pm</em> 0.00015</td>
+      <td>[0.00083, 0.00124]</td>
+    </tr>
+    <tr>
+      <td><strong>13</strong></td>
+      <td><strong>SleepTime</strong></td>
+      <td>Behavioral Lifestyle</td>
+      <td><strong>0.00079</strong> <em>\pm</em> 0.00009</td>
+      <td>[0.00068, 0.00097]</td>
+    </tr>
+    <tr>
+      <td><strong>14</strong></td>
+      <td><strong>MentalHealth</strong></td>
+      <td>Functional Morbidity</td>
+      <td><strong>0.00045</strong> <em>\pm</em> 0.00014</td>
+      <td>[0.00032, 0.00067]</td>
+    </tr>
+    <tr>
+      <td><strong>15</strong></td>
+      <td><strong>SkinCancer</strong></td>
+      <td>Clinical Morbidity</td>
+      <td><strong>0.00028</strong> <em>\pm</em> 0.00009</td>
+      <td>[0.00015, 0.00040]</td>
+    </tr>
+    <tr>
+      <td><strong>16</strong></td>
+      <td><strong>AlcoholDrinking</strong></td>
+      <td>Behavioral Lifestyle</td>
+      <td><strong>0.00019</strong> <em>\pm</em> 0.00015</td>
+      <td>[-0.00007, 0.00039]</td>
+    </tr>
+    <tr>
+      <td><strong>17</strong></td>
+      <td><strong>PhysicalActivity</strong></td>
+      <td>Behavioral Lifestyle</td>
+      <td><strong>-0.00000</strong> <em>\pm</em> 0.00005</td>
+      <td>[-0.00009, 0.00009]</td>
+    </tr>
+  </tbody>
+</table>
+<div class="table-caption">Table 6: Permutation feature importance (mean drop in ROC-AUC under 5-repeat shuffling).</div>
+<p><code>AgeCategory</code> alone accounted for an AUC drop of <em>0.1127</em>, followed by <code>GenHealth</code> (<em>0.0331</em>) and <code>Sex</code> (<em>0.0181</em>). In contrast, lifestyle factors (BMI, SleepTime, Alcohol, Physical Activity) individually accounted for AUC drops <em><0.0015</em>.</p>
+<p><strong>Methodological Interpretation:</strong> This disparity does <strong>not</strong> suggest that physical activity, diet, and sleep are biologically irrelevant to cardiovascular pathophysiology. Rather, it demonstrates that cross-sectional telephone surveys capture behavioral habits via coarse, single-item categorical questions prone to recall bias, whereas age and physician-diagnosed comorbidity serve as massive statistical shortcuts for accumulated lifetime vascular exposure [Geirhos2020_Shortcut].</p>
+<p>---</p>
+<h2>8. Subgroup Generalization and Algorithmic Disparities</h2>
+    <div class="figure-container">
+      <img src="figures/subgroup_temporal_generalization.png" alt="Figure 7: Subgroup Generalization and Age Disparity">
+      <div class="figure-caption"><strong>Figure 7:</strong> Subgroup performance across age, sex, and racial/ethnic strata. Age disparity reflects a dual phenomenon: ranking discrimination degradation in the elderly (~0.735 vs ~0.795 in young) combined with a 3.0-fold fixed-threshold sensitivity disparity across an 11-fold prevalence gradient.</div>
+    </div>
+    
+<p>Table 7 reports stratified model performance across age strata, biological sex, and racial/ethnic groups across all three survey waves.</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Subgroup Dimension</th>
+      <th>Stratum</th>
+      <th>2020 Test N (Positives, Prev %)</th>
+      <th>2020 ROC-AUC</th>
+      <th>2020 Sensitivity (%)</th>
+      <th>2020 Specificity (%)</th>
+      <th>2021 External AUC (Recall / Spec)</th>
+      <th>2022 External AUC (Recall / Spec)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Age (Broad)</strong></td>
+      <td>Young Adults (<em><50</em>)</td>
+      <td><em>23,991</em> (<em>397</em>, <em>1.65\%</em>)</td>
+      <td><strong>0.7780</strong></td>
+      <td><em>28.97\%</em></td>
+      <td><em>96.99\%</em></td>
+      <td><strong>0.7961</strong> (<em>31.48\%</em> / <em>97.20\%</em>)</td>
+      <td><strong>0.7946</strong> (<em>33.91\%</em> / <em>96.44\%</em>)</td>
+    </tr>
+    <tr>
+      <td>Age (Broad)</td>
+      <td>Middle-Aged (<em>50-69</em>)</td>
+      <td><em>24,635</em> (<em>2,226</em>, <em>9.04\%</em>)</td>
+      <td><strong>0.7815</strong></td>
+      <td><em>72.28\%</em></td>
+      <td><em>70.95\%</em></td>
+      <td><strong>0.7904</strong> (<em>73.58\%</em> / <em>69.83\%</em>)</td>
+      <td><strong>0.7898</strong> (<em>75.31\%</em> / <em>68.40\%</em>)</td>
+    </tr>
+    <tr>
+      <td>Age (Broad)</td>
+      <td>Elderly Adults (<em>\ge 70</em>)</td>
+      <td><em>15,333</em> (<em>2,852</em>, <em>18.60\%</em>)</td>
+      <td><strong>0.7407</strong></td>
+      <td><em>92.71\%</em></td>
+      <td><em>31.74\%</em></td>
+      <td><strong>0.7389</strong> (<em>92.57\%</em> / <em>30.96\%</em>)</td>
+      <td><strong>0.7348</strong> (<em>93.04\%</em> / <em>29.17\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Biological Sex</strong></td>
+      <td>Female</td>
+      <td><em>33,513</em> (<em>2,281</em>, <em>6.81\%</em>)</td>
+      <td><strong>0.8318</strong></td>
+      <td><em>72.25\%</em></td>
+      <td><em>78.61\%</em></td>
+      <td><strong>0.8384</strong> (<em>73.17\%</em> / <em>78.19\%</em>)</td>
+      <td><strong>0.8377</strong> (<em>74.92\%</em> / <em>77.01\%</em>)</td>
+    </tr>
+    <tr>
+      <td>Biological Sex</td>
+      <td>Male</td>
+      <td><em>30,446</em> (<em>3,194</em>, <em>10.49\%</em>)</td>
+      <td><strong>0.8342</strong></td>
+      <td><em>85.16\%</em></td>
+      <td><em>66.76\%</em></td>
+      <td><strong>0.8344</strong> (<em>85.66\%</em> / <em>65.55\%</em>)</td>
+      <td><strong>0.8340</strong> (<em>86.62\%</em> / <em>64.50\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Race / Ethnicity</strong></td>
+      <td>White</td>
+      <td><em>49,015</em> (<em>4,503</em>, <em>9.19\%</em>)</td>
+      <td><strong>0.8346</strong></td>
+      <td><em>81.19\%</em></td>
+      <td><em>70.92\%</em></td>
+      <td><strong>0.8384</strong> (<em>82.51\%</em> / <em>69.90\%</em>)</td>
+      <td><strong>0.8373</strong> (<em>83.85\%</em> / <em>68.44\%</em>)</td>
+    </tr>
+    <tr>
+      <td>Race / Ethnicity</td>
+      <td>Black</td>
+      <td><em>4,596</em> (<em>334</em>, <em>7.27\%</em>)</td>
+      <td><strong>0.8311</strong></td>
+      <td><em>79.34\%</em></td>
+      <td><em>75.15\%</em></td>
+      <td><strong>0.8199</strong> (<em>73.80\%</em> / <em>73.85\%</em>)</td>
+      <td><strong>0.8173</strong> (<em>74.95\%</em> / <em>73.19\%</em>)</td>
+    </tr>
+    <tr>
+      <td>Race / Ethnicity</td>
+      <td>Asian</td>
+      <td><em>1,607</em> (<em>59</em>, <em>3.67\%</em>)</td>
+      <td><strong>0.8817</strong></td>
+      <td><em>66.10\%</em></td>
+      <td><em>91.21\%</em></td>
+      <td><strong>0.8540</strong> (<em>57.69\%</em> / <em>90.52\%</em>)</td>
+      <td><strong>0.8624</strong> (<em>60.67\%</em> / <em>90.57\%</em>)</td>
+    </tr>
+    <tr>
+      <td>Race / Ethnicity</td>
+      <td>AI / AN</td>
+      <td><em>1,055</em> (<em>115</em>, <em>10.90\%</em>)</td>
+      <td><strong>0.8201</strong></td>
+      <td><em>82.61\%</em></td>
+      <td><em>69.47\%</em></td>
+      <td><strong>0.8277</strong> (<em>78.49\%</em> / <em>71.51\%</em>)</td>
+      <td><strong>0.8315</strong> (<em>80.20\%</em> / <em>70.76\%</em>)</td>
+    </tr>
+    <tr>
+      <td>Race / Ethnicity</td>
+      <td>Hispanic</td>
+      <td><em>5,452</em> (<em>280</em>, <em>5.14\%</em>)</td>
+      <td><strong>0.8186</strong></td>
+      <td><em>62.50\%</em></td>
+      <td><em>84.16\%</em></td>
+      <td><strong>0.8407</strong> (<em>66.19\%</em> / <em>84.32\%</em>)</td>
+      <td><strong>0.8398</strong> (<em>67.82\%</em> / <em>83.67\%</em>)</td>
+    </tr>
+  </tbody>
+</table>
+<div class="table-caption">Table 7: Subgroup generalization across age brackets, sex, and race/ethnicity evaluated at frozen threshold $\tau^* = 0.0816$.</div>
+<h3>8.1 The Dual Phenomenon in Age Subgroup Performance</h3>
+<p>Our analysis establishes that age-related performance disparities represent a <strong>dual phenomenon</strong> involving both ranking degradation and operational threshold disparities:</p>
+<div class="reference-item"><strong>1.</strong> <strong>Intra-Group Ranking Degradation:</strong> Within-group discriminative ranking degraded significantly in older adults. ROC-AUC dropped from $0.7946$–$0.7961$ in young adults ($<50$) down to $0.7348$–$0.7407$ in elderly adults ($\ge 70$), a statistically significant degradation of $\Delta \text{AUC} \approx -0.06$ ($p < 0.0001$). In elderly adults, high baseline multimorbidity (e.g., hypertension, arthritis, general fatigue) blunts the contrast between respondents with and without diagnosed heart disease.</div>
+<div class="reference-item"><strong>2.</strong> <strong>Operating Threshold Disparity:</strong> Simultaneously, applying a fixed global screening threshold ($\tau^* = 0.0816$) across an $11$-fold prevalence gradient ($1.6\%$ in young vs. $19.2\%$ in elderly) generated severe sensitivity-specificity trade-offs. In young adults, the model achieved very high specificity ($96.4\%$–$97.2\%$) but low sensitivity ($29.0\%$–$33.9\%$). In elderly adults, sensitivity reached $92.6\%$–$93.0\%$, but specificity collapsed to $29.2\%$–$31.7\%$.</div>
+<p><strong>Policy Note:</strong> Modifying threshold rules across demographic strata creates complex ethical and clinical utility trade-offs [Rajkomar2018_Fairness]; age-specific thresholds cannot be deployed without prospective clinical impact trials.</p>
+<p>---</p>
+<h2>9. Temporal Validation Across Multi-Year Surveillance Waves</h2>
+    <div class="figure-container">
+      <img src="figures/roc_curves_by_wave.png" alt="Figure 4a: ROC Curves by Wave">
+      <img src="figures/pr_curves_by_wave.png" alt="Figure 4b: PR Curves by Wave" style="margin-top: 10px;">
+      <div class="figure-caption"><strong>Figure 4:</strong> Temporal validation discrimination curves for the frozen 2020 XGBoost model evaluated across BRFSS 2020 (test), 2021 (median sleep), and 2022 (full empirical) surveillance waves.</div>
+    </div>
+    
+    <div class="figure-container">
+      <img src="figures/temporal_confusion_matrices.png" alt="Figure 8: Temporal Confusion Matrices">
+      <div class="figure-caption"><strong>Figure 8:</strong> Multi-wave temporal confusion matrices at the frozen domain-informed screening threshold (&tau;* = 0.0816), demonstrating stable ~80% sensitivity across consecutive surveillance years.</div>
+    </div>
+    
+<h3>9.1 Multi-Wave Discrimination and Screening Stability</h3>
+<p>Table 8 summarizes the performance of the frozen 2020 XGBoost model evaluated on the independent out-of-time surveillance cohorts from 2021 (<em>N = 348,568</em>) and 2022 (<em>N = 339,264</em>).</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Evaluation Cohort</th>
+      <th>Sample Size (N)</th>
+      <th>Positives</th>
+      <th>Prevalence (%)</th>
+      <th>ROC-AUC (95% CI)</th>
+      <th>PR-AUC (95% CI)</th>
+      <th>Sensitivity (%) at <em>\tau^*</em></th>
+      <th>Specificity (%) at <em>\tau^*</em></th>
+      <th>Brier Score</th>
+      <th>ECE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>2020 Held-Out Test</strong></td>
+      <td><em>63,959</em></td>
+      <td><em>5,475</em></td>
+      <td><em>8.56\%</em></td>
+      <td><strong>0.8371</strong> [0.8307, 0.8430]</td>
+      <td><strong>0.3455</strong> [0.3298, 0.3617]</td>
+      <td><strong>79.78%</strong> [78.43, 80.85]</td>
+      <td><strong>73.09%</strong> [72.68, 73.50]</td>
+      <td><em>0.0657</em></td>
+      <td><em>0.0026</em></td>
+    </tr>
+    <tr>
+      <td><strong>2021 Primary (Median Imputed)</strong></td>
+      <td><em>348,568</em></td>
+      <td><em>28,444</em></td>
+      <td><em>8.16\%</em></td>
+      <td><strong>0.8407</strong> [0.8349, 0.8467]</td>
+      <td><strong>0.3304</strong> [0.3171, 0.3451]</td>
+      <td><strong>80.68%</strong> [79.60, 81.89]</td>
+      <td><strong>72.24%</strong> [71.86, 72.62]</td>
+      <td><em>0.0634</em></td>
+      <td><em>0.0055</em></td>
+    </tr>
+    <tr>
+      <td><strong>2021 Sensitivity (NaN Routing)</strong></td>
+      <td><em>348,568</em></td>
+      <td><em>28,444</em></td>
+      <td><em>8.16\%</em></td>
+      <td><strong>0.8344</strong> [0.8286, 0.8406]</td>
+      <td><strong>0.3077</strong> [0.2955, 0.3221]</td>
+      <td><strong>90.18%</strong> [89.35, 91.00]</td>
+      <td><strong>58.74%</strong> [58.29, 59.31]</td>
+      <td><em>0.0698</em></td>
+      <td><em>0.0514</em></td>
+    </tr>
+    <tr>
+      <td><strong>2022 Full Model (Empirical)</strong></td>
+      <td><em>339,264</em></td>
+      <td><em>30,256</em></td>
+      <td><em>8.92\%</em></td>
+      <td><strong>0.8397</strong> [0.8338, 0.8461]</td>
+      <td><strong>0.3501</strong> [0.3376, 0.3646]</td>
+      <td><strong>81.96%</strong> [80.67, 83.10]</td>
+      <td><strong>70.87%</strong> [70.45, 71.29]</td>
+      <td><em>0.0680</em></td>
+      <td><em>0.0044</em></td>
+    </tr>
+  </tbody>
+</table>
+<div class="table-caption">Table 8: Multi-wave temporal validation metrics evaluated with frozen threshold $\tau^* = 0.081612$.</div>
+<p>Two-sample independent difference tests confirmed zero statistically significant degradation in discriminative ranking:</p>
+<ul><li><strong>2021 vs. 2020:</strong> <em>\Delta \text{AUC} = +0.003607</em> (<em>95\%</em> CI: <em>[-0.0049, +0.0121]</em>, <em>Z = 0.829</em>, <em>p = 0.407</em>).</li></ul>
+<ul><li><strong>2022 vs. 2020:</strong> <em>\Delta \text{AUC} = +0.002586</em> (<em>95\%</em> CI: <em>[-0.0061, +0.0113]</em>, <em>Z = 0.582</em>, <em>p = 0.560</em>).</li></ul>
+<p>Screening sensitivity remained remarkably stable at the frozen threshold <em>\tau^* = 0.0816</em>: <em>79.78\%</em> in 2020, <em>80.68\%</em> in 2021, and <em>81.96\%</em> in 2022.</p>
+<h3>9.2 The 2021 Sleep Duration Rotation</h3>
+<p>As documented in official CDC reports, sleep duration was rotated off the nationwide core questionnaire in 2021 [CDC_BRFSS_Overview]. Passing missing values directly through XGBoost's uncalibrated default NaN branches caused an upward probability drift of <em>+4.6\%</em>, shifting recall to <em>90.18\%</em>, dropping specificity to <em>58.74\%</em>, and causing a <em>9.3</em>-fold spike in calibration error (<em>\text{ECE} = 0.0514</em>).</p>
+<p>In contrast, our primary harmonized strategy—imputing the 2020 training set median (<em>7.0</em> hours)—restored pristine calibration (<em>\text{ECE} = 0.0055</em>, Brier score <em>0.0634</em>) and achieved performance virtually identical to the 2020 test partition. Furthermore, in BRFSS 2022, sleep duration was measured empirically for all <em>339,264</em> respondents, independently verifying that temporal stability is genuine (<em>\text{AUC} = 0.8397</em>, sensitivity <em>81.96\%</em>, specificity <em>70.87\%</em>, <em>\text{ECE} = 0.0044</em>).</p>
+<h3>9.3 Complex Survey-Weighted Evaluation</h3>
+<p>Table 9 contrasts unweighted respondent-level metrics against design-weighted population estimates.</p>
+<table class="academic-table">
+  <thead>
+    <tr>
+      <th>Wave</th>
+      <th>Metric</th>
+      <th>Unweighted Value (%)</th>
+      <th>Survey-Weighted Value (%)</th>
+      <th>Design-Based SE (%)</th>
+      <th>Design Effect (DEFF)</th>
+      <th>95% Design-Based CI</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>2021</strong></td>
+      <td><strong>Target Prevalence</strong></td>
+      <td><em>8.16\%</em></td>
+      <td><strong>6.18%</strong></td>
+      <td><em>0.08\%</em></td>
+      <td><em>4.13</em></td>
+      <td>[6.02%, 6.35%]</td>
+    </tr>
+    <tr>
+      <td>2021</td>
+      <td><strong>Sensitivity at <em>\tau^*</em></strong></td>
+      <td><em>80.68\%</em></td>
+      <td><strong>75.19%</strong></td>
+      <td><em>0.64\%</em></td>
+      <td><em>76.85</em></td>
+      <td>[73.93%, 76.45%]</td>
+    </tr>
+    <tr>
+      <td>2021</td>
+      <td><strong>Specificity at <em>\tau^*</em></strong></td>
+      <td><em>72.24\%</em></td>
+      <td><strong>80.17%</strong></td>
+      <td><em>0.14\%</em></td>
+      <td><em>4.38</em></td>
+      <td>[79.90%, 80.45%]</td>
+    </tr>
+    <tr>
+      <td>2021</td>
+      <td><strong>ROC-AUC</strong></td>
+      <td><em>0.8407</em></td>
+      <td><strong>0.8564</strong></td>
+      <td><em>0.0022</em></td>
+      <td><em>2.34</em></td>
+      <td>[0.8521, 0.8607]</td>
+    </tr>
+    <tr>
+      <td><strong>2022</strong></td>
+      <td><strong>Target Prevalence</strong></td>
+      <td><em>8.92\%</em></td>
+      <td><strong>6.74%</strong></td>
+      <td><em>0.08\%</em></td>
+      <td><em>3.51</em></td>
+      <td>[6.59%, 6.90%]</td>
+    </tr>
+    <tr>
+      <td>2022</td>
+      <td><strong>Sensitivity at <em>\tau^*</em></strong></td>
+      <td><em>81.96\%</em></td>
+      <td><strong>78.72%</strong></td>
+      <td><em>0.50\%</em></td>
+      <td><em>49.96</em></td>
+      <td>[77.74%, 79.69%]</td>
+    </tr>
+    <tr>
+      <td>2022</td>
+      <td><strong>Specificity at <em>\tau^*</em></strong></td>
+      <td><em>70.87\%</em></td>
+      <td><strong>78.79%</strong></td>
+      <td><em>0.14\%</em></td>
+      <td><em>4.09</em></td>
+      <td>[78.51%, 79.07%]</td>
+    </tr>
+    <tr>
+      <td>2022</td>
+      <td><strong>ROC-AUC</strong></td>
+      <td><em>0.8397</em></td>
+      <td><strong>0.8607</strong></td>
+      <td><em>0.0021</em></td>
+      <td><em>2.18</em></td>
+      <td>[0.8565, 0.8649]</td>
+    </tr>
+  </tbody>
+</table>
+<div class="table-caption">Table 9: Complex survey-weighted versus unweighted performance with Taylor series linearization.</div>
+<p>Survey-weighted sensitivity was systematically lower than unweighted sensitivity (<em>75.19\%</em> vs. <em>80.68\%</em> in 2021; <em>78.72\%</em> vs. <em>81.96\%</em> in 2022), whereas weighted specificity was substantially higher (<em>80.17\%</em> vs. <em>72.24\%</em> in 2021; <em>78.79\%</em> vs. <em>70.87\%</em> in 2022).</p>
+<p><strong>Epidemiological Mechanism:</strong> Telephone health surveys exhibit response bias, over-sampling older retired adults who have higher target disease prevalence and high model sensitivity (<em>\sim 93\%</em>). CDC raking weights down-weight older respondents to align sample margins with U.S. Census population totals, while up-weighting younger adults who have high specificity (<em>\sim 97\%</em>). Consequently, population-weighted specificity increases by <em>\sim 8\%</em>, shifting the population-representative ROC-AUC to <em>0.8564</em> (2021) and <em>0.8607</em> (2022).</p>
+<p>---</p>
+<h2>10. Discussion</h2>
+<h3>10.1 Principal Findings</h3>
+<p>This study provides a rigorous, leak-free evaluation of machine learning algorithms for classifying self-reported cardiovascular disease in population health survey microdata across <em>>1.2</em> million individuals. Our primary empirical findings are:</p>
+<div class="reference-item"><strong>1.</strong> <strong>Resampling Data Leakage:</strong> Pre-split SMOTE creates severe evaluation contamination, inflating ROC-AUC by $+0.1566$.</div>
+<div class="reference-item"><strong>2.</strong> <strong>Harm of Synthetic Resampling:</strong> Clean training-only SMOTE degrades probability calibration (Brier error $+38.1\%$) and impairs rank-order discrimination compared to unresampled gradient boosted trees.</div>
+<div class="reference-item"><strong>3.</strong> <strong>Threshold-Moving Superiority:</strong> Adjusting the classification threshold on unresampled probabilities achieves target screening sensitivity ($\sim 80\%$) without synthetic data distortion.</div>
+<div class="reference-item"><strong>4.</strong> <strong>Demographic Dominance:</strong> Cross-sectional predictive power is heavily dominated by age and general health; self-reported behavioral variables contribute minimal incremental discrimination.</div>
+<div class="reference-item"><strong>5.</strong> <strong>Multi-Wave Stability:</strong> The frozen unresampled model demonstrated excellent temporal stability across independent 2021 and 2022 surveillance cohorts.</div>
+<div class="reference-item"><strong>6.</strong> <strong>Complex Survey Weighting Disparity:</strong> Accounting for CDC survey weights systematically shifts sensitivity and specificity due to demographic post-stratification.</div>
+<p>---</p>
+<h2>11. Study Limitations</h2>
+<p>To preserve scientific rigor, the conclusions of this paper must be interpreted within twelve explicit boundaries:</p>
+<div class="reference-item"><strong>1.</strong> <strong>Retrospective Cross-Sectional Target:</strong> The outcome reflects self-reported lifetime physician diagnosis. The model cannot predict prospective incident disease or 10-year cardiovascular risk.</div>
+<div class="reference-item"><strong>2.</strong> <strong>Surviving Population Bias:</strong> Survey respondents are community-dwelling survivors; fatal cardiovascular events are unobserved.</div>
+<div class="reference-item"><strong>3.</strong> <strong>Absence of Objective Biomarkers:</strong> BRFSS contains no laboratory blood tests, troponins, lipid panels, ECGs, or imaging.</div>
+<div class="reference-item"><strong>4.</strong> <strong>Self-Reporting and Recall Errors:</strong> Behavioral features and medical diagnoses are subject to recall bias and social desirability.</div>
+<div class="reference-item"><strong>5.</strong> <strong>No Clinical Bedside Deployment:</strong> This model is designed for public health epidemiological surveillance and methodology benchmarking, not clinical diagnosis.</div>
+<div class="reference-item"><strong>6.</strong> <strong>Non-Causal Feature Associations:</strong> Permutation importance reflects predictive associations, not causal intervention effects. Modifying survey-reported variables cannot be inferred to reduce individual disease risk.</div>
+<div class="reference-item"><strong>7.</strong> <strong>Complete-Case Selection:</strong> Retaining complete cases excluded $20.5\%$ (2021) and $23.8\%$ (2022) of records, disproportionately affecting females and racial minorities who refused body weight or alcohol reporting.</div>
+<div class="reference-item"><strong>8.</strong> <strong>Sleep Variable Rotation:</strong> Sleep duration required median imputation in 2021 due to questionnaire rotation.</div>
+<div class="reference-item"><strong>9.</strong> <strong>Heavily Explored 2020 Partition:</strong> The 2020 dataset was pre-cleaned in a public Kaggle release; our out-of-time evaluation in 2021 and 2022 guards against overfitting.</div>
+<div class="reference-item"><strong>10.</strong> <strong>Survey Weight Renormalization:</strong> Renormalizing weights among complete cases does not completely correct potential non-ignorable item non-response.</div>
+<div class="reference-item"><strong>11.</strong> <strong>Subgroup Operational Trade-offs:</strong> The dual phenomenon across age strata demonstrates that threshold selection involves ethical trade-offs that require clinical trials.</div>
+<div class="reference-item"><strong>12.</strong> <strong>Geographic and Setting Generalizability:</strong> Findings reflect U.S. telephone health surveillance and cannot be generalized to other national healthcare systems without independent external validation.</div>
+<p>---</p>
+<h2>12. Conclusion</h2>
+<p>Machine learning models trained on population health surveys can achieve stable out-of-time ranking discrimination and maintain domain-informed screening sensitivity across consecutive national surveillance cycles. However, achieving valid results requires strict evaluation hygiene: avoiding pre-split resampling leakage, eschewing probability-distorting synthetic oversampling, establishing calibrated decision thresholds, and evaluating complex survey weights. When properly audited, gradient boosted decision trees provide a robust tool for public health surveillance benchmarking.</p>
+<p>---</p>
+<h2>References</h2>
+<div class="reference-item"><strong>1.</strong> <strong>Tsao CW, Aday AW, Almarzooq ZI, et al.</strong> Heart Disease and Stroke Statistics—2023 Update: A Report From the American Heart Association. *Circulation*. 2023;147(8):e93–e621. DOI: <a href="https://doi.org/10.1161/CIR.0000000000001123">10.1161/CIR.0000000000001123</a>.</div>
+<div class="reference-item"><strong>2.</strong> <strong>Centers for Disease Control and Prevention.</strong> Behavioral Risk Factor Surveillance System: Overview and Annual Survey Documentation (2020–2022). CDC Public Health Surveillance Reports; 2023. Available from: https://www.cdc.gov/brfss/annual_data/annual_data.htm.</div>
+<div class="reference-item"><strong>3.</strong> <strong>Jahed R, Asser O, Al-Mousa A.</strong> Using Personal Key Indicators and Machine Learning-Based Classifiers for the Prediction of Heart Disease. In: *2023 IEEE 3rd International Conference on Smart Computing and Application (ICSCA)*. IEEE; 2023:1–6. DOI: <a href="https://doi.org/10.1109/ICSCA57840.2023.10087430">10.1109/ICSCA57840.2023.10087430</a>.</div>
+<div class="reference-item"><strong>4.</strong> <strong>Aiosa GV, Comito C, Forestiero A, Pizzuti C.</strong> EXplainable AI for Decision Support to Obesity Comorbidities Diagnosis. *IEEE Access*. 2023;11:113451–113463. DOI: <a href="https://doi.org/10.1109/ACCESS.2023.3320057">10.1109/ACCESS.2023.3320057</a>.</div>
+<div class="reference-item"><strong>5.</strong> <strong>Chawla NV, Bowyer KW, Hall LO, Kegelmeyer WP.</strong> SMOTE: Synthetic Minority Over-sampling Technique. *Journal of Artificial Intelligence Research*. 2002;16:321–357. DOI: <a href="https://doi.org/10.1613/jair.953">10.1613/jair.953</a>.</div>
+<div class="reference-item"><strong>6.</strong> <strong>Vandewiele G, Dehaene I, Kovacs P, et al.</strong> Overfitting in synthetic oversampling: how data leakage inflates cross-validation performance. *Machine Learning*. 2021;110(6):1183–1204. DOI: <a href="https://doi.org/10.1007/s10994-021-05977-z">10.1007/s10994-021-05977-z</a>.</div>
+<div class="reference-item"><strong>7.</strong> <strong>Kapoor S, Narayanan A.</strong> Leakage and the reproducibility crisis in machine-learning-based science. *Patterns*. 2023;4(9):100804. DOI: <a href="https://doi.org/10.1016/j.patter.2023.100804">10.1016/j.patter.2023.100804</a>.</div>
+<div class="reference-item"><strong>8.</strong> <strong>Van Calster B, McLernon DJ, van Smeden M, Wynants L, Steyerberg EW.</strong> Calibration: the Achilles heel of predictive analytics. *BMC Medicine*. 2019;17(1):230. DOI: <a href="https://doi.org/10.1186/s12916-019-1466-7">10.1186/s12916-019-1466-7</a>.</div>
+<div class="reference-item"><strong>9.</strong> <strong>Steyerberg EW, Vickers AJ, Cook NR, et al.</strong> Assessing the performance of prediction models: a framework for traditional and novel measures. *Epidemiology*. 2010;21(1):128–138. DOI: <a href="https://doi.org/10.1097/EDE.0b013e3181c30fb2">10.1097/EDE.0b013e3181c30fb2</a>.</div>
+<div class="reference-item"><strong>10.</strong> <strong>He H, Garcia EA.</strong> Learning from imbalanced data. *IEEE Transactions on Knowledge and Data Engineering*. 2009;21(9):1263–1284. DOI: <a href="https://doi.org/10.1109/TKDE.2008.239">10.1109/TKDE.2008.239</a>.</div>
+<div class="reference-item"><strong>11.</strong> <strong>Obermeyer Z, Powers B, Vogeli C, Mullainathan S.</strong> Dissecting racial bias in an algorithm used to manage the health of populations. *Science*. 2019;366(6464):447–453. DOI: <a href="https://doi.org/10.1126/science.aax2342">10.1126/science.aax2342</a>.</div>
+<div class="reference-item"><strong>12.</strong> <strong>Heeringa SG, West BT, Berglund PA.</strong> *Applied Survey Data Analysis*. 2nd ed. Chapman and Hall/CRC; 2017. DOI: <a href="https://doi.org/10.1201/9781315153278">10.1201/9781315153278</a>.</div>
+<div class="reference-item"><strong>13.</strong> <strong>Chen T, Guestrin C.</strong> XGBoost: A Scalable Tree Boosting System. In: *Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*. ACM; 2016:785–794. DOI: <a href="https://doi.org/10.1145/2939672.2939785">10.1145/2939672.2939785</a>.</div>
+<div class="reference-item"><strong>14.</strong> <strong>Breiman L.</strong> Random Forests. *Machine Learning*. 2001;45(1):5–32. DOI: <a href="https://doi.org/10.1023/A:1010933404324">10.1023/A:1010933404324</a>.</div>
+<div class="reference-item"><strong>15.</strong> <strong>Lundberg SM, Lee SI.</strong> A unified approach to interpreting model predictions. *Advances in Neural Information Processing Systems*. 2017;30:4765–4774.</div>
+<div class="reference-item"><strong>16.</strong> <strong>Youden WJ.</strong> Index for rating diagnostic tests. *Cancer*. 1950;3(1):32–35. DOI: <a href="https://doi.org/10.1002/1097-0142(1950">10.1002/1097-0142(1950)3:1<32::aid-cncr2820030106>3.0.co;2-3</a>3:1<32::aid-cncr2820030106>3.0.co;2-3).</div>
+<div class="reference-item"><strong>17.</strong> <strong>Platt J.</strong> Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. *Advances in Large Margin Classifiers*. 1999;10(3):61–74.</div>
+<div class="reference-item"><strong>18.</strong> <strong>Zadrozny B, Elkan C.</strong> Transforming classifier scores into accurate multiclass probability estimates. In: *Proceedings of the Eighth ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*. ACM; 2002:694–699. DOI: <a href="https://doi.org/10.1145/775047.775151">10.1145/775047.775151</a>.</div>
+<div class="reference-item"><strong>19.</strong> <strong>Brier GW.</strong> Verification of forecasts expressed in terms of probability. *Monthly Weather Review*. 1950;78(1):1–3. DOI: <a href="https://doi.org/10.1175/1520-0493(1950">10.1175/1520-0493(1950)078<0001:VOFEIT>2.0.CO;2</a>078<0001:VOFEIT>2.0.CO;2).</div>
+<div class="reference-item"><strong>20.</strong> <strong>Lumley T.</strong> Analysis of complex survey samples. *Journal of Statistical Software*. 2004;9(1):1–19. DOI: <a href="https://doi.org/10.18637/jss.v009.i08">10.18637/jss.v009.i08</a>.</div>
+<div class="reference-item"><strong>21.</strong> <strong>Wolter KM.</strong> *Introduction to Variance Estimation*. 2nd ed. Springer; 2007. DOI: <a href="https://doi.org/10.1007/978-0-387-35099-8">10.1007/978-0-387-35099-8</a>.</div>
+<div class="reference-item"><strong>22.</strong> <strong>Geirhos R, Jacobsen JH, Michaelis C, et al.</strong> Shortcut learning in deep neural networks. *Nature Machine Intelligence*. 2020;2(11):665–673. DOI: <a href="https://doi.org/10.1038/s42256-020-00257-z">10.1038/s42256-020-00257-z</a>.</div>
+<div class="reference-item"><strong>23.</strong> <strong>Rajkomar A, Hardt M, Howell MD, Corrado G, Chin MH.</strong> Ensuring fairness in machine learning to advance health equity. *Annals of Internal Medicine*. 2018;169(12):866–872. DOI: <a href="https://doi.org/10.7326/M18-1990">10.7326/M18-1990</a>.</div>
+<div class="reference-item"><strong>24.</strong> <strong>Collins GS, Moons KGM, Dhiman P, et al.</strong> TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use machine learning or artificial intelligence. *BMJ*. 2024;385:e078378. DOI: <a href="https://doi.org/10.1136/bmj-2023-078378">10.1136/bmj-2023-078378</a>.</div>
+<div class="reference-item"><strong>25.</strong> <strong>von Elm E, Altman DG, Egger M, et al.</strong> The Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) statement: guidelines for reporting observational studies. *The Lancet*. 2007;370(9596):1453–1457. DOI: <a href="https://doi.org/10.1016/S0140-6736(07">10.1016/S0140-6736(07)61602-X</a>61602-X).</div>
+</body>
+</html>

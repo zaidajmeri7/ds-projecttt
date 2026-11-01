@@ -1,0 +1,4 @@
+Surveillance Wave,Raw / Ingested Records,Complete Cases Evaluated,Excluded Records,Positive Cases,Unweighted Prevalence (%),Survey-Weighted Prevalence (%),Evaluation Role
+BRFSS 2020 (Development Cohort),"319,795","319,795 (100.0%)",0 (Cleaned Kaggle Release),"27,373",8.56%,N/A (Pre-cleaned file),"80% Train (N=255,836) / 20% Held-Out Test (N=63,959)"
+BRFSS 2021 (Temporal Wave 1),"438,693","348,568 (79.46%)","90,125 (20.54%)","28,444",8.16%,"6.18% (SE: 0.08%, DEFF: 4.13)",External Out-of-Time Surveillance Evaluation (Median/NaN)
+BRFSS 2022 (Temporal Wave 2),"445,132","339,264 (76.22%)","105,868 (23.78%)","30,256",8.92%,"6.74% (SE: 0.08%, DEFF: 3.51)",External Out-of-Time Surveillance Evaluation (100% Empirical)

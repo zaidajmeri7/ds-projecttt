@@ -1,0 +1,152 @@
+project:
+  name: "Heart Disease Prediction and Risk-Factor Analysis"
+  version: "2.0.0"
+  random_seed: 42
+
+data:
+  raw_path: "data/heart_2020_cleaned.csv"
+  dataset_sha256: "90a1e2e8bdcb4aba54314a41d35d2ac3be4763e459df33951e08e415f527f5a8"
+  target_column: "HeartDisease"
+  positive_label: "Yes"
+  negative_label: "No"
+  test_size: 0.20
+  stratify: true
+  n_splits: 5
+
+features:
+  numerical:
+    - BMI
+    - PhysicalHealth
+    - MentalHealth
+    - SleepTime
+  categorical:
+    - Smoking
+    - AlcoholDrinking
+    - Stroke
+    - DiffWalking
+    - Sex
+    - AgeCategory
+    - Race
+    - Diabetic
+    - PhysicalActivity
+    - GenHealth
+    - Asthma
+    - KidneyDisease
+    - SkinCancer
+
+feature_groups:
+  group_a_demographics:
+    - AgeCategory
+    - Sex
+    - Race
+  group_a_age_sex_only:
+    - AgeCategory
+    - Sex
+  group_b_lifestyle:
+    - BMI
+    - Smoking
+    - AlcoholDrinking
+    - PhysicalActivity
+    - SleepTime
+  group_b_lifestyle_with_genhealth:
+    - BMI
+    - Smoking
+    - AlcoholDrinking
+    - PhysicalActivity
+    - SleepTime
+    - GenHealth
+  group_c_health_status:
+    - Stroke
+    - Diabetic
+    - DiffWalking
+    - PhysicalHealth
+    - MentalHealth
+    - GenHealth
+    - Asthma
+    - KidneyDisease
+    - SkinCancer
+  group_d_all_features:
+    - BMI
+    - Smoking
+    - AlcoholDrinking
+    - Stroke
+    - PhysicalHealth
+    - MentalHealth
+    - DiffWalking
+    - Sex
+    - AgeCategory
+    - Race
+    - Diabetic
+    - PhysicalActivity
+    - GenHealth
+    - SleepTime
+    - Asthma
+    - KidneyDisease
+    - SkinCancer
+  group_e_no_demographics:
+    - BMI
+    - Smoking
+    - AlcoholDrinking
+    - Stroke
+    - PhysicalHealth
+    - MentalHealth
+    - DiffWalking
+    - Diabetic
+    - PhysicalActivity
+    - GenHealth
+    - SleepTime
+    - Asthma
+    - KidneyDisease
+    - SkinCancer
+
+subgroups:
+  age:
+    young:
+      - "18-24"
+      - "25-29"
+      - "30-34"
+      - "35-39"
+      - "40-44"
+      - "45-49"
+    middle:
+      - "50-54"
+      - "55-59"
+      - "60-64"
+      - "65-69"
+    elderly:
+      - "70-74"
+      - "75-79"
+      - "80 or older"
+  sex:
+    - "Male"
+    - "Female"
+  race:
+    - "White"
+    - "Black"
+    - "Asian"
+    - "American Indian/Alaskan Native"
+    - "Hispanic"
+    - "Other"
+
+models:
+  logistic_regression:
+    max_iter: 1000
+    solver: "lbfgs"
+    random_state: 42
+  random_forest:
+    n_estimators: 100
+    max_depth: 12
+    n_jobs: -1
+    random_state: 42
+  xgboost:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    eval_metric: "logloss"
+    n_jobs: -1
+    random_state: 42
+
+paths:
+  tables: "results/tables"
+  figures: "results/figures"
+  logs: "results/logs"

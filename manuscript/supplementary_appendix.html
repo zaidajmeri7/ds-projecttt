@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Supplementary Appendix</title>
+<style>
+
+    @page {
+      size: letter;
+      margin: 20mm 18mm 20mm 18mm;
+      @bottom-right {
+        content: counter(page);
+        font-size: 8.5pt;
+        font-family: 'Times New Roman', Times, serif;
+      }
+    }
+    body {
+      font-family: 'Times New Roman', Times, 'Nimbus Roman No9 L', serif;
+      font-size: 9pt;
+      line-height: 1.4;
+      color: #111;
+      margin: 0;
+      padding: 0;
+    }
+    .title-block {
+      text-align: center;
+      margin-bottom: 22px;
+      border-bottom: 1.5px solid #1a365d;
+      padding-bottom: 12px;
+    }
+    .title {
+      font-size: 16pt;
+      font-weight: bold;
+      line-height: 1.25;
+      margin-bottom: 8px;
+      color: #0b1a30;
+    }
+    .subtitle {
+      font-size: 10pt;
+      color: #444;
+      font-style: italic;
+    }
+    h2 {
+      font-size: 11pt;
+      font-weight: bold;
+      border-bottom: 0.75px solid #333;
+      padding-bottom: 2px;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #1a365d;
+    }
+    h3 {
+      font-size: 10pt;
+      font-weight: bold;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      color: #222;
+    }
+    p {
+      text-align: justify;
+      margin: 0 0 6px 0;
+      text-indent: 1.5em;
+    }
+    p.no-indent, h2 + p, h3 + p {
+      text-indent: 0 !important;
+    }
+    table.academic-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 6px 0;
+      font-size: 7.5pt;
+      line-height: 1.25;
+      page-break-inside: avoid;
+    }
+    table.academic-table th {
+      border-top: 1.5px solid #111;
+      border-bottom: 1px solid #111;
+      padding: 3.5px 5px;
+      font-weight: bold;
+      text-align: left;
+      background: #f7f9fa;
+    }
+    table.academic-table td {
+      border-bottom: 0.5px solid #e1e4e8;
+      padding: 3px 5px;
+      vertical-align: top;
+    }
+    table.academic-table tr:last-child td {
+      border-bottom: 1.5px solid #111;
+    }
+    ul, ol {
+      margin: 4px 0 8px 18px;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 3px;
+      text-align: justify;
+    }
+    .math-block {
+      text-align: center;
+      margin: 8px 0;
+      font-style: italic;
+    }
+    
+</style>
+</head>
+<body>
+<div class="title-block">  <div class="title">Supplementary Appendix: Methodological, Statistical, and Empirical Foundations</div>  <div class="subtitle">Accompanying: Beyond Random Splits: Leakage, Imbalance Handling, Calibration, and Temporal Generalization in BRFSS-Based Heart Disease Classification</div></div><p>---</p><h2>Appendix A: Complete Feature Crosswalk and Harmonization Specification</h2><p>The Behavioral Risk Factor Surveillance System (BRFSS) is administered annually across all 50 U.S. states, the District of Columbia, and three U.S. territories by state health departments in collaboration with the Centers for Disease Control and Prevention (CDC).</p><p>The table below provides the full cross-wave mapping for all 17 candidate predictor variables and the primary outcome across the 2020, 2021, and 2022 survey cycles.</p><table class="academic-table">
+  <thead>
+    <tr>
+      <th>Variable Name</th>
+      <th>CDC 2020 Name</th>
+      <th>CDC 2021 Name</th>
+      <th>CDC 2022 Name</th>
+      <th>CDC Core Questionnaire Text</th>
+      <th>Response Code Mapping</th>
+      <th>Preprocessing & Harmonization</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>_MICHD</strong> (Target)</td>
+      <td>`_MICHD` (`HeartDisease`)</td>
+      <td>`_MICHD`</td>
+      <td>`_MICHD`</td>
+      <td>Calculated: Ever told had coronary heart disease (angina) or myocardial infarction</td>
+      <td>`1` = Yes (Positive); `2` = No (Negative)</td>
+      <td>Target binary status indicator. Removed missing / refused.</td>
+    </tr>
+    <tr>
+      <td><strong>BMI</strong></td>
+      <td>`_BMI5`</td>
+      <td>`_BMI5`</td>
+      <td>`_BMI5`</td>
+      <td>Body Mass Index (calculated from reported height and weight)</td>
+      <td>Continuous integer (implied 2 decimal places: e.g., 2750 = 27.50)</td>
+      <td>Divided by 100.0. Scaled via training-fit `StandardScaler`.</td>
+    </tr>
+    <tr>
+      <td><strong>Smoking</strong></td>
+      <td>`SMOKE100`</td>
+      <td>`SMOKE100`</td>
+      <td>`SMOKE100`</td>
+      <td>"Have you smoked at least 100 cigarettes in your entire life?"</td>
+      <td>`1` = Yes; `2` = No</td>
+      <td>Binary indicator: `Yes` / `No`. One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>AlcoholDrinking</strong></td>
+      <td>`_RFDRHV7`</td>
+      <td>`_RFDRHV7`</td>
+      <td>`_RFDRHV8`</td>
+      <td>Heavy drinkers (adult men >14 drinks/wk, women >7 drinks/wk)</td>
+      <td>`1` = No; `2` = Yes</td>
+      <td>Binary indicator: `No` / `Yes`. (2022 renamed to `_RFDRHV8` due to ALCDAY4 update; logic identical).</td>
+    </tr>
+    <tr>
+      <td><strong>Stroke</strong></td>
+      <td>`CVDSTRK3`</td>
+      <td>`CVDSTRK3`</td>
+      <td>`CVDSTRK3`</td>
+      <td>"(Ever told) you had a stroke?"</td>
+      <td>`1` = Yes; `2` = No</td>
+      <td>Binary indicator: `No` / `Yes`. One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>PhysicalHealth</strong></td>
+      <td>`PHYSHLTH`</td>
+      <td>`PHYSHLTH`</td>
+      <td>`PHYSHLTH`</td>
+      <td>"Now thinking about your physical health, for how many days during the past 30 days was your physical health not good?"</td>
+      <td>`1-30` = Number of days; `88` = None (0 days)</td>
+      <td>Mapped `88` <em>\to 0.0</em>. Continuous float <em>[0, 30]</em>. Scaled via `StandardScaler`.</td>
+    </tr>
+    <tr>
+      <td><strong>MentalHealth</strong></td>
+      <td>`MENTHLTH`</td>
+      <td>`MENTHLTH`</td>
+      <td>`MENTHLTH`</td>
+      <td>"Now thinking about your mental health, for how many days during the past 30 days was your mental health not good?"</td>
+      <td>`1-30` = Number of days; `88` = None (0 days)</td>
+      <td>Mapped `88` <em>\to 0.0</em>. Continuous float <em>[0, 30]</em>. Scaled via `StandardScaler`.</td>
+    </tr>
+    <tr>
+      <td><strong>DiffWalking</strong></td>
+      <td>`DIFFWALK`</td>
+      <td>`DIFFWALK`</td>
+      <td>`DIFFWALK`</td>
+      <td>"Do you have serious difficulty walking or climbing stairs?"</td>
+      <td>`1` = Yes; `2` = No</td>
+      <td>Binary indicator: `No` / `Yes`. One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>Sex</strong></td>
+      <td>`_SEX` / `SEXVAR`</td>
+      <td>`_SEX`</td>
+      <td>`_SEX`</td>
+      <td>Biological sex recorded from respondent interview</td>
+      <td>`1` = Male; `2` = Female</td>
+      <td>Binary category: `Male` / `Female`. One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>AgeCategory</strong></td>
+      <td>`_AGEG5YR`</td>
+      <td>`_AGEG5YR`</td>
+      <td>`_AGEG5YR`</td>
+      <td>Fourteen-level calculated five-year age categories</td>
+      <td>`1` = 18-24 ... `13` = 80+, `14` = DK/Refused</td>
+      <td>Categorical strings ('18-24', ..., '80 or older'). One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>Race</strong></td>
+      <td>`_IMPRACE`</td>
+      <td>`_IMPRACE`</td>
+      <td>`_IMPRACE`</td>
+      <td>Six-level CDC imputed race/ethnicity variable</td>
+      <td>`1` = White, `2` = Black, `3` = Asian, `4` = AI/AN, `5` = Hispanic, `6` = Other</td>
+      <td>Nominal categorical (6 levels). One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>Diabetic</strong></td>
+      <td>`DIABETE4`</td>
+      <td>`DIABETE4`</td>
+      <td>`DIABETE4`</td>
+      <td>"(Ever told) you have diabetes?"</td>
+      <td>`1` = Yes; `2` = Yes (pregnancy); `3` = No; `4` = Borderline</td>
+      <td>Categorical (4 levels: `Yes`, `No`, `No borderline`, `Yes (pregnancy)`). One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>PhysicalActivity</strong></td>
+      <td>`_TOTINDA`</td>
+      <td>`_TOTINDA`</td>
+      <td>`_TOTINDA`</td>
+      <td>Adults who reported doing physical activity or exercises other than job</td>
+      <td>`1` = Yes; `2` = No</td>
+      <td>Binary indicator: `Yes` / `No`. One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>GenHealth</strong></td>
+      <td>`GENHLTH`</td>
+      <td>`GENHLTH`</td>
+      <td>`GENHLTH`</td>
+      <td>"Would you say that in general your health is: Excellent, Very good, Good, Fair, Poor"</td>
+      <td>`1` = Excellent, `2` = Very good, `3` = Good, `4` = Fair, `5` = Poor</td>
+      <td>Ordinal categorical string levels. One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>SleepTime</strong></td>
+      <td>`SLEPTIM1`</td>
+      <td>*Rotated Off*</td>
+      <td>`SLEPTIM1`</td>
+      <td>"On average, how many hours of sleep do you get in a 24-hour period?"</td>
+      <td>`1-24` = Hours of sleep</td>
+      <td>Continuous integer <em>[1, 24]</em>. In 2021: median-imputed to <em>7.0</em> (sensitivity: NaN routing). In 2022: empirical. Scaled via `StandardScaler`.</td>
+    </tr>
+    <tr>
+      <td><strong>Asthma</strong></td>
+      <td>`ASTHMA3`</td>
+      <td>`ASTHMA3`</td>
+      <td>`ASTHMA3`</td>
+      <td>"(Ever told) you had asthma?"</td>
+      <td>`1` = Yes; `2` = No</td>
+      <td>Binary indicator: `No` / `Yes`. One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>KidneyDisease</strong></td>
+      <td>`CHCKDNY2`</td>
+      <td>`CHCKDNY2`</td>
+      <td>`CHCKDNY2`</td>
+      <td>"(Ever told) you have kidney disease (excluding kidney stones or bladder infection)?"</td>
+      <td>`1` = Yes; `2` = No</td>
+      <td>Binary indicator: `No` / `Yes`. One-hot encoded.</td>
+    </tr>
+    <tr>
+      <td><strong>SkinCancer</strong></td>
+      <td>`CHCSCNCR`</td>
+      <td>`CHCSCNCR`</td>
+      <td>`CHCSCNC1`</td>
+      <td>"(Ever told) you had skin cancer?"</td>
+      <td>`1` = Yes; `2` = No</td>
+      <td>Binary indicator: `No` / `Yes`. (2022 renamed `CHCSCNC1` due to section order; identical wording).</td>
+    </tr>
+  </tbody>
+</table><p>---</p><h2>Appendix B: Mathematical Formulation of Complex Survey Weighting</h2><p>The BRFSS employs a multistage, stratified probability sampling design. Simple random sampling (SRS) variance estimation formulas underestimate true sampling variance due to intra-cluster correlation and unequal probability of selection.</p><h3>1. Complex Survey Design Parameters</h3><p>For respondent <em>i</em> belonging to stratum <em>h</em> (<em>h = 1, \dots, H</em>) and primary sampling unit (PSU / cluster) <em>j</em> (<em>j = 1, \dots, n_h</em>):</p><ul><li><em>w_{hij} = \text{\_LLCPWT}</em>: final post-stratification sampling weight produced via iterative proportional fitting (raking) to match state-level Census population margins (age, sex, race, education, marital status, home ownership, telephone ownership).</li></ul><ul><li>Stratum identifier: <code>_STSTR</code>.</li></ul><ul><li>Cluster / Primary Sampling Unit identifier: <code>_PSU</code>.</li></ul><h3>2. Taylor Series Linearization for Ratio Estimators</h3><p>Population-representative performance metrics (such as disease prevalence, sensitivity, and specificity) are nonlinear ratio estimators of the form:</p><div class="math-block"><em>\hat{R} = \frac{\hat{Y}}{\hat{X}} = \frac{\sum_{h=1}^H \sum_{j=1}^{n_h} \sum_{i=1}^{m_{hj}} w_{hij} y_{hij}}{\sum_{h=1}^H \sum_{j=1}^{n_h} \sum_{i=1}^{m_{hj}} w_{hij} x_{hij}}</em></div><p>For population sensitivity at a fixed threshold <em>\tau^*</em>:</p><ul><li><em>y_{hij} = I(y_{hij} = 1 \text{ and } \hat{p}_{hij} \ge \tau^*)</em></li></ul><ul><li><em>x_{hij} = I(y_{hij} = 1)</em></li></ul><p>For population specificity:</p><ul><li><em>y_{hij} = I(y_{hij} = 0 \text{ and } \hat{p}_{hij} < \tau^*)</em></li></ul><ul><li><em>x_{hij} = I(y_{hij} = 0)</em></li></ul><p>The first-order Taylor series linearization linearizes the ratio <em>\hat{R}</em> around its expected value:</p><div class="math-block"><em>z_{hij} = \frac{y_{hij} - \hat{R} x_{hij}}{\hat{X}}</em></div><p>The survey-design variance estimator is then given by:</p><div class="math-block"><em>\widehat{\text{Var}}(\hat{R}) = \sum_{h=1}^H \frac{n_h}{n_h - 1} \sum_{j=1}^{n_h} \left( z_{hj\cdot} - \bar{z}_{h\cdot\cdot} \right)^2</em></div><p>where:</p><div class="math-block"><em>z_{hj\cdot} = \sum_{i=1}^{m_{hj}} w_{hij} z_{hij}, \quad \bar{z}_{h\cdot\cdot} = \frac{1}{n_h} \sum_{j=1}^{n_h} z_{hj\cdot}</em></div><p>The design-based standard error is <em>\text{SE}(\hat{R}) = \sqrt{\widehat{\text{Var}}(\hat{R})}</em>, and the design effect (<em>\text{DEFF}</em>) is defined as:</p><div class="math-block"><em>\text{DEFF} = \frac{\widehat{\text{Var}}_{\text{complex}}(\hat{R})}{\widehat{\text{Var}}_{\text{SRS}}(\hat{R})}</em></div><p>Empirically, for BRFSS 2021 and 2022, <em>\text{DEFF}</em> values range from <em>1.76</em> to <em>4.38</em>, demonstrating that standard unweighted or unstratified bootstrap resampling substantially underestimates true sampling variance.</p><p>---</p><h2>Appendix C: Complete Missingness Selection Audit</h2><p>To evaluate whether complete-case evaluation introduced substantial target selection bias, we forensically audited all excluded respondents in 2021 and 2022.</p><h3>1. Retention and Attrition Breakdown</h3><table class="academic-table">
+  <thead>
+    <tr>
+      <th>Metric / Cohort Property</th>
+      <th>BRFSS 2021 Wave</th>
+      <th>BRFSS 2022 Wave</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Total Ingested Records</strong></td>
+      <td><em>438,693</em></td>
+      <td><em>445,132</em></td>
+    </tr>
+    <tr>
+      <td><strong>Complete-Case Records Retained</strong></td>
+      <td><em>348,568</em> (<em>79.46\%</em>)</td>
+      <td><em>339,264</em> (<em>76.22\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Excluded Records</strong></td>
+      <td><em>90,125</em> (<em>20.54\%</em>)</td>
+      <td><em>105,868</em> (<em>23.78\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Missing Target (`_MICHD`)</strong></td>
+      <td><em>4,635</em> (<em>1.06\%</em>)</td>
+      <td><em>5,021</em> (<em>1.13\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Missing Continuous/Numeric Features</strong></td>
+      <td><em>59,421</em> (<em>13.55\%</em>)</td>
+      <td><em>66,154</em> (<em>14.86\%</em>)</td>
+    </tr>
+    <tr>
+      <td>- *Missing BMI (`_BMI5`)*</td>
+      <td><em>46,852</em> (<em>10.68\%</em>)</td>
+      <td><em>48,806</em> (<em>10.96\%</em>)</td>
+    </tr>
+    <tr>
+      <td>- *Missing Physical Health (`PHYSHLTH`)*</td>
+      <td><em>10,488</em> (<em>2.39\%</em>)</td>
+      <td><em>11,947</em> (<em>2.68\%</em>)</td>
+    </tr>
+    <tr>
+      <td>- *Missing Mental Health (`MENTHLTH`)*</td>
+      <td><em>8,521</em> (<em>1.94\%</em>)</td>
+      <td><em>9,812</em> (<em>2.20\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Missing Categorical Predictors</strong></td>
+      <td><em>51,919</em> (<em>11.83\%</em>)</td>
+      <td><em>67,330</em> (<em>15.13\%</em>)</td>
+    </tr>
+    <tr>
+      <td>- *Missing Heavy Drinking (`_RFDRHV`)*</td>
+      <td><em>34,992</em> (<em>7.98\%</em>)</td>
+      <td><em>49,705</em> (<em>11.17\%</em>)</td>
+    </tr>
+    <tr>
+      <td>- *Missing Smoking Status (`SMOKE100`)*</td>
+      <td><em>24,461</em> (<em>5.58\%</em>)</td>
+      <td><em>34,959</em> (<em>7.85\%</em>)</td>
+    </tr>
+    <tr>
+      <td>- *Missing General Health (`GENHLTH`)*</td>
+      <td><em>1,842</em> (<em>0.42\%</em>)</td>
+      <td><em>2,105</em> (<em>0.47\%</em>)</td>
+    </tr>
+  </tbody>
+</table><h3>2. Demographic and Target Distribution: Complete Cases vs. Excluded Respondents</h3><table class="academic-table">
+  <thead>
+    <tr>
+      <th>Cohort Characteristic</th>
+      <th>2021 Included Complete Cases</th>
+      <th>2021 Excluded Records</th>
+      <th>2022 Included Complete Cases</th>
+      <th>2022 Excluded Records</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Target Disease Prevalence</strong></td>
+      <td><em>8.16\%</em></td>
+      <td><em>8.05\%</em> (<em>\Delta = +0.11\%</em>)</td>
+      <td><em>8.92\%</em></td>
+      <td><em>9.42\%</em> (<em>\Delta = -0.50\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Elderly (Ages 70+)</strong></td>
+      <td><em>24.53\%</em></td>
+      <td><em>24.03\%</em> (<em>\Delta = +0.50\%</em>)</td>
+      <td><em>25.24\%</em></td>
+      <td><em>25.14\%</em> (<em>\Delta = +0.10\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Female Biological Sex</strong></td>
+      <td><em>51.80\%</em></td>
+      <td><em>60.32\%</em> (<em>\Delta = -8.52\%</em>)</td>
+      <td><em>51.24\%</em></td>
+      <td><em>58.63\%</em> (<em>\Delta = -7.39\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>White Race/Ethnicity</strong></td>
+      <td><em>76.74\%</em></td>
+      <td><em>71.81\%</em> (<em>\Delta = +4.93\%</em>)</td>
+      <td><em>76.23\%</em></td>
+      <td><em>70.74\%</em> (<em>\Delta = +5.49\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Black Race/Ethnicity</strong></td>
+      <td><em>7.15\%</em></td>
+      <td><em>9.82\%</em> (<em>\Delta = -2.67\%</em>)</td>
+      <td><em>7.34\%</em></td>
+      <td><em>9.91\%</em> (<em>\Delta = -2.57\%</em>)</td>
+    </tr>
+    <tr>
+      <td><strong>Hispanic Race/Ethnicity</strong></td>
+      <td><em>8.43\%</em></td>
+      <td><em>10.84\%</em> (<em>\Delta = -2.41\%</em>)</td>
+      <td><em>8.66\%</em></td>
+      <td><em>11.21\%</em> (<em>\Delta = -2.55\%</em>)</td>
+    </tr>
+  </tbody>
+</table><p><strong>Assessment of Bias:</strong></p><p>1. <em>Target Selection Bias:</em> The difference in self-reported heart disease prevalence between included complete cases and excluded respondents is negligible (<em>0.11\%</em> in 2021 and <em>0.50\%</em> in 2022), and elderly representation is virtually identical (<em>\Delta \le 0.50\%</em>).</p><p>2. <em>Demographic Selection Bias:</em> Refusal to report body weight and height (driving BMI missingness) and alcohol consumption frequency was disproportionately higher among female respondents (<em>+7.4\%</em> to <em>+8.5\%</em>) and racial/ethnic minority respondents (<em>+5.0\%</em> to <em>+5.5\%</em>). Renormalizing post-stratification sampling weights within the complete-case subcohort partially rebalances sample margins against U.S. Census totals, but does not completely cure potential non-ignorable item non-response.</p><p>---</p><h2>Appendix D: 2021 Sleep Duration Rotation and Sensitivity Benchmarking</h2><p>In the BRFSS surveillance system, certain questionnaire modules undergo biennial rotation between odd and even survey years. The sleep duration item (<code>SLEPTIM1</code>) was included in the 2020 core survey, rotated off the nationwide core survey in 2021 (appearing only in optional state-added modules), and restored to the nationwide core survey in 2022.</p><p>In the 2020 training dataset (<em>N = 255,836</em>), <code>SleepTime</code> had zero missing values after pre-filtering. Consequently, XGBoost's default tree routing rules for missing values (<code>np.nan</code>) were never activated during training and defaulted to split paths associated with higher risk.</p><p>We benchmarked two explicit operational strategies on the <em>N = 348,568</em> complete-case 2021 cohort:</p><p>1. <strong>Primary Predefined Harmonization Rule (Median Imputation):</strong> Sleep duration was imputed with a constant value of <em>7.0</em> hours, representing the exact median and modal sleep duration in the 2020 training set.</p><p>2. <strong>Secondary Sensitivity Benchmark (Native NaN Tree Routing):</strong> Missing sleep values were passed directly as <code>np.nan</code> through the preprocessor pipeline and routed via XGBoost's default branch rules.</p><table class="academic-table">
+  <thead>
+    <tr>
+      <th>Evaluation Metric</th>
+      <th>Primary: Median Imputation (<em>7.0</em> hrs)</th>
+      <th>Sensitivity: Native Missing Routing (`NaN`)</th>
+      <th>Absolute Shift (<em>\Delta</em>)</th>
+      <th>2022 Empirical Baseline (<em>100\%</em> Measured)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>ROC-AUC</strong></td>
+      <td><strong>0.8407</strong></td>
+      <td><strong>0.8344</strong></td>
+      <td><em>-0.0063</em></td>
+      <td><strong>0.8397</strong></td>
+    </tr>
+    <tr>
+      <td><strong>PR-AUC</strong></td>
+      <td><strong>0.3304</strong></td>
+      <td><strong>0.3077</strong></td>
+      <td><em>-0.0227</em></td>
+      <td><strong>0.3501</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Sensitivity at <em>\tau = 0.0816</em></strong></td>
+      <td><strong>80.68%</strong> (<em>22,948</em> TP)</td>
+      <td><strong>90.18%</strong> (<em>25,651</em> TP)</td>
+      <td><em>+9.50\%</em></td>
+      <td><strong>81.96%</strong> (<em>24,798</em> TP)</td>
+    </tr>
+    <tr>
+      <td><strong>Specificity at <em>\tau = 0.0816</em></strong></td>
+      <td><strong>72.24%</strong> (<em>231,245</em> TN)</td>
+      <td><strong>58.74%</strong> (<em>188,035</em> TN)</td>
+      <td><em>-13.50\%</em></td>
+      <td><strong>70.87%</strong> (<em>218,995</em> TN)</td>
+    </tr>
+    <tr>
+      <td><strong>Positive Predictive Value (PPV)</strong></td>
+      <td><strong>20.52%</strong></td>
+      <td><strong>16.26%</strong></td>
+      <td><em>-4.26\%</em></td>
+      <td><strong>21.60%</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Brier Score</strong></td>
+      <td><strong>0.0634</strong></td>
+      <td><strong>0.0698</strong></td>
+      <td><em>+0.0064</em></td>
+      <td><strong>0.0680</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Expected Calibration Error (ECE)</strong></td>
+      <td><strong>0.0055</strong></td>
+      <td><strong>0.0514</strong></td>
+      <td><em>+0.0459</em> (<em>9.3\times</em> error)</td>
+      <td><strong>0.0044</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Mean Predicted Probability</strong></td>
+      <td><strong>0.0871</strong></td>
+      <td><strong>0.1330</strong></td>
+      <td><em>+0.0459</em> (<em>+52.7\%</em> drift)</td>
+      <td><strong>0.0931</strong></td>
+    </tr>
+  </tbody>
+</table><p><strong>Conclusion:</strong></p><p>Uncalibrated tree routing on unobserved missing features caused an upward probability drift of <em>+4.6\%</em> points, artificially inflating recall to <em>90.18\%</em> at the expense of a severe collapse in specificity (<em>58.74\%</em>) and a <em>9.3</em>-fold explosion in calibration error (<em>\text{ECE} = 0.0514</em>). In contrast, imputing the 2020 training median (<em>7.0</em> hours) maintained pristine probability calibration (<em>\text{ECE} = 0.0055</em>) and closely mirrored the 2022 empirical wave results (<em>81.96\%</em> recall, <em>70.87\%</em> specificity, <em>\text{ECE} = 0.0044</em>).</p>
+</body>
+</html>
